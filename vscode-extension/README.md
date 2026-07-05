@@ -54,9 +54,6 @@ Light or dark theme, accent color, option selector style, font, and layout densi
 
 Prompts, settings, and wizard progress persist across sessions. Open and export use native file dialogs; exports write straight to your workspace.
 
-## For developers
-
-Run from source: open this folder in VSCode and press **F5** (zero dependencies). Package with `npx @vscode/vsce package`, then `Extensions: Install from VSIX…`. Requires internet on first load (React from unpkg; Google Fonts optional). `media/studio.html` is generated from the original `Markdown Prompt Studio.dc.html` — regenerate rather than editing by hand.
 
 ## Author
 Adam Mohammad Boulad — adam.mohammad.boulad@gmail.com
