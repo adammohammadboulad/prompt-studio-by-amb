@@ -11,7 +11,7 @@ A good prompt is full of deliberate decisions. Instead of baking one decision in
 ### 📄 Markdown Viewer
 A clean reader for any `.md` file that understands inline options. Open a prompt, toggle its options, and copy the resolved text — exactly what you'll paste into your AI chat. Great for browsing and reusing a personal prompt library.
 
-![Markdown Viewer with inline options, outline and options panel](media/shots/viewer.png)
+![Markdown Viewer with inline options, outline and options panel](vscode-extension/media/shots/viewer.png)
 
 ### 🪄 Prompt Wizard
 Builds a full prompt from a rough idea, step by step:
@@ -21,12 +21,12 @@ Builds a full prompt from a rough idea, step by step:
 
 You stay in control at every step — the wizard drafts, you decide.
 
-![Prompt Wizard review step with the assembled, option-rich prompt](media/shots/wizard.png)
+![Prompt Wizard review step with the assembled, option-rich prompt](vscode-extension/media/shots/wizard.png)
 
 ### ✦ Enrich Prompt
 Paste a rough prompt and get a clear, well-structured, reusable one back — with the uncertain parts expressed as inline options instead of invented facts.
 
-![Enrich Prompt with the Mode, Persona and Structure dials](media/shots/enrich.png)
+![Enrich Prompt with the Mode, Persona and Structure dials](vscode-extension/media/shots/enrich.png)
 
 ## The dials: Mode, Persona, Structure
 
@@ -45,7 +45,7 @@ Bring your own AI provider (including local Ollama). Your API key is stored in t
 
 Light or dark theme, accent color, option selector style, font, and layout density — all in the Customize panel.
 
-![Customize panel: theme, accent color, selector style, fonts and layout](media/shots/customize.png)
+![Customize panel: theme, accent color, selector style, fonts and layout](vscode-extension/media/shots/customize.png)
 
 ## Using it in VSCode
 - `Cmd/Ctrl+Shift+P` → **Prompt Studio by AMB: Open**
