@@ -53,3 +53,6 @@ Light or dark theme, accent color, option selector style, font, and layout densi
 - Right-click a `.md` file in the Explorer → **Open in Prompt Studio by AMB**
 
 Prompts, settings, and wizard progress persist across sessions. Open and export use native file dialogs; exports write straight to your workspace.
+
+## Author
+Adam Mohammad Boulad — adam.mohammad.boulad@gmail.com
