@@ -1,0 +1,48 @@
+{
+  "name": "markdown-prompt-studio",
+  "displayName": "Prompt Studio by AMB",
+  "description": "Turn prompts into living markdown with clickable inline options. Markdown viewer, step-by-step Prompt Wizard, and Enrich Prompt — with Mode, Persona and Structure dials — inside VSCode.",
+  "version": "0.1.0",
+  "publisher": "adam-mohammad-boulad",
+  "author": {
+    "name": "Adam Mohammad Boulad",
+    "email": "adam.mohammad.boulad@gmail.com"
+  },
+  "engines": { "vscode": "^1.85.0" },
+  "bugs": { "email": "adam.mohammad.boulad@gmail.com" },
+  "icon": "icon.png",
+  "categories": ["Other"],
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownPromptStudio.open",
+        "title": "Prompt Studio by AMB: Open"
+      },
+      {
+        "command": "markdownPromptStudio.openFile",
+        "title": "Open in Prompt Studio by AMB",
+        "icon": {
+          "light": "media/ps-light.svg",
+          "dark": "media/ps-dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "markdownPromptStudio.openFile",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "markdownPromptStudio.openFile",
+          "when": "resourceExtname == .md",
+          "group": "navigation"
+        }
+      ]
+    }
+  }
+}

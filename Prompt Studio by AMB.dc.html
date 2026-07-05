@@ -1,0 +1,2585 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@300..700&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400&family=Source+Sans+3:ital,wght@0,400..700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf9f7; --surface:#ffffff; --surface2:#fdfcfa; --sidebar:#f6f4f0;
+    --seg:#efece6; --seg-active:#ffffff; --subtle:#f4f2ee; --code:#f0ede7; --hover:#ece8e1;
+    --border:#e7e3dc; --border2:#eeeae3; --border3:#ddd8cf; --tborder:#e2ddd4; --qborder:#d8d2c7; --rail:#eae6de;
+    --text:#1f1d1a; --text2:#2b2822; --text3:#4c463d; --qtext:#5c554a;
+    --muted:#6f685c; --muted2:#8a8378; --muted3:#a39b8d;
+    --faint:#c6bfb3; --faint2:#b6afa3; --disabled:#d3cdc2;
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --bg:#171512; --surface:#211f1b; --surface2:#1b1916; --sidebar:#1d1b18;
+    --seg:#2b2823; --seg-active:#454039; --subtle:#2a2722; --code:#252220; --hover:#2e2b26;
+    --border:#37342e; --border2:#302d28; --border3:#443f38; --tborder:#3b3831; --qborder:#47433b; --rail:#312e29;
+    --text:#ece9e3; --text2:#dcd8d0; --text3:#b5aea2; --qtext:#a49d91;
+    --muted:#9c958a; --muted2:#8d8679; --muted3:#7f786d;
+    --faint:#5b564e; --faint2:#6a645a; --disabled:#4d483f;
+    color-scheme:dark;
+  }
+  html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+  *{box-sizing:border-box}
+  ::selection{background:rgba(15,118,110,.18)}
+  textarea:focus{outline:none}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;height:100vh;overflow:hidden;position:relative" data-screen-label="Markdown Prompt Studio">
+
+  <!-- ============ TOP BAR ============ -->
+  <div style="display:flex;align-items:center;height:46px;background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;gap:4px;flex:none">
+    <div onClick="{{ mailAuthor }}" title="Contact the author" style="font-weight:700;font-size:14px;letter-spacing:-0.01em;margin-right:18px;display:flex;align-items:center;gap:8px;cursor:pointer">
+      <img src="./brand-icon.png" alt="" style="width:22px;height:22px;border-radius:6px">
+      Prompt Studio by AMB
+    </div>
+    <button onClick="{{ goTabViewer }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabViewerBorder }};color:{{ tabViewerColor }};font-weight:{{ tabViewerWeight }}">Markdown Viewer</button>
+    <button onClick="{{ goTabBuilder }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabBuilderBorder }};color:{{ tabBuilderColor }};font-weight:{{ tabBuilderWeight }}">Prompt Wizard</button>
+    <button onClick="{{ goTabWorkshop }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabWorkshopBorder }};color:{{ tabWorkshopColor }};font-weight:{{ tabWorkshopWeight }}">Enrich Prompt</button>
+    <div style="flex:1"></div>
+    <button onClick="{{ openHelp }}" title="How inline options work" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;width:30px;font-size:13px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">?</button>
+    <sc-if value="{{ onViewerTab }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ detectOptions }}" style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ detectLabel }}</button>
+      <button onClick="{{ copySelected }}" style="display:flex;align-items:center;gap:6px;border:none;background:{{ accent }};color:#fff;border-radius:7px;height:30px;padding:0 14px;font-size:12.5px;font-weight:600;cursor:pointer">{{ copyLabel }}</button>
+      <button onClick="{{ toggleSettings }}" data-cust-btn="1" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
+    </sc-if>
+    <sc-if value="{{ onBuilderTab }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleSettings }}" data-cust-btn="1" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
+    </sc-if>
+  </div>
+
+  <!-- ============ CONTACT POPUP ============ -->
+  <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeContact }}" style="position:absolute;inset:0;z-index:90;background:rgba(31,29,26,.35);display:flex;align-items:center;justify-content:center">
+      <div style="background:var(--surface);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:400px;max-width:90vw;padding:22px 24px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center">
+        <img src="./brand-icon.png" alt="" style="width:96px;height:96px;border-radius:20px">
+        <div style="font-size:16px;font-weight:700;color:var(--text)">Prompt Studio by AMB</div>
+        <div style="font-size:13px;line-height:1.6;color:var(--text3)">Created by <strong>Adam Mohammad Boulad</strong>.<br>Reach out with feedback or ideas at:</div>
+        <div style="font-size:13.5px;font-weight:600;color:{{ accent }};font-family:ui-monospace,Menlo,monospace;background:var(--subtle);border:1px solid var(--border);border-radius:8px;padding:8px 14px">{{ authorEmail }}</div>
+        <button onClick="{{ closeContact }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 20px;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:4px">Close</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ HELP POPUP (per tab) ============ -->
+  <sc-if value="{{ helpOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeHelp }}" style="position:absolute;inset:0;z-index:90;background:rgba(31,29,26,.35);display:flex;align-items:center;justify-content:center">
+      <div onClick="{{ stop }}" style="background:var(--surface);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:460px;max-width:90vw;max-height:82vh;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span style="font-size:18px">{{ helpIcon }}</span>
+          <div style="font-size:16px;font-weight:700;color:var(--text)">{{ helpTitle }}</div>
+        </div>
+        <div style="font-size:13px;line-height:1.65;color:var(--text3)">{{ helpBody }}</div>
+        <sc-if value="{{ helpHasCode }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--subtle);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--text2)">{{ helpCode }}</div>
+        </sc-if>
+        <sc-for list="{{ helpTips }}" as="t" hint-placeholder-count="3">
+          <div style="font-size:12.5px;line-height:1.6;color:var(--text3);display:flex;gap:8px;align-items:flex-start">
+            <span style="color:{{ accent }};font-size:13px;flex:none">{{ t.icon }}</span>
+            <span>{{ t.text }}</span>
+          </div>
+        </sc-for>
+        <button onClick="{{ closeHelp }}" style="align-self:flex-end;border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:2px">Got it</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ NO-OPTIONS POPUP ============ -->
+  <sc-if value="{{ noOptionsPopup }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:80;background:rgba(31,29,26,.35);display:flex;align-items:center;justify-content:center">
+      <div style="background:var(--surface);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:420px;max-width:90vw;padding:22px 24px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:16px;font-weight:700;color:var(--text)">No options found in this markdown</div>
+        <div style="font-size:13px;line-height:1.6;color:var(--text3)">
+          Add options anywhere in your text using this format:
+          <div style="margin-top:8px;background:var(--subtle);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--text2)">[option name](ph:option 1|option 2|option 3)</div>
+          <div style="margin-top:8px">It will render as an inline selector you can pick from.</div>
+        </div>
+        <div style="font-size:13px;line-height:1.6;color:var(--text3);display:flex;gap:8px;align-items:flex-start">
+          <span style="color:{{ accent }};font-size:14px">✦</span>
+          <span>Or let AI find them for you — the <strong>Detect Options</strong> button scans your markdown and suggests options automatically.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2);cursor:pointer;flex:1">
+            <input type="checkbox" checked="{{ noOptNever }}" onChange="{{ toggleNoOptNever }}" style="accent-color:{{ accent }};cursor:pointer"></input>
+            Don't show this again
+          </label>
+          <button onClick="{{ dismissNoOptions }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)">Got it</button>
+          <button onClick="{{ detectOptions }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;font-weight:600;cursor:pointer">✦ Detect Options</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ CUSTOMIZE POPOVER ============ -->
+  <sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-cust-pop="1" style="position:absolute;top:50px;right:12px;z-index:60;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.12);padding:14px;width:232px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted3)">Customize</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Theme</div>
+        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+          <sc-for list="{{ themeChoices }}" as="ch" hint-placeholder-count="2">
+            <button onClick="{{ ch.onPick }}" style="flex:1;border:none;border-radius:5px;padding:4px 0;font-size:12px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.color }};font-weight:600;box-shadow:{{ ch.shadow }}">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Accent color</div>
+        <div style="display:flex;gap:8px">
+          <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="4">
+            <button onClick="{{ sw.onPick }}" style="width:24px;height:24px;border-radius:50%;background:{{ sw.color }};border:2px solid {{ sw.border }};cursor:pointer;padding:0"></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Selector style</div>
+        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+          <sc-for list="{{ styleChoices }}" as="ch" hint-placeholder-count="3">
+            <button onClick="{{ ch.onPick }}" style="flex:1;border:none;border-radius:5px;padding:4px 0;font-size:12px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.color }};font-weight:600;box-shadow:{{ ch.shadow }}">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Font size</div>
+        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+          <sc-for list="{{ sizeChoices }}" as="ch" hint-placeholder-count="3">
+            <button onClick="{{ ch.onPick }}" style="flex:1;border:none;border-radius:5px;padding:4px 0;font-size:12px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.color }};font-weight:600;box-shadow:{{ ch.shadow }}">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Layout</div>
+        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+          <sc-for list="{{ layoutChoices }}" as="ch" hint-placeholder-count="2">
+            <button onClick="{{ ch.onPick }}" style="flex:1;border:none;border-radius:5px;padding:4px 0;font-size:12px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.color }};font-weight:600;box-shadow:{{ ch.shadow }}">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Content font</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--seg);border-radius:7px;padding:2px">
+          <sc-for list="{{ fontChoices }}" as="ch" hint-placeholder-count="2">
+            <button onClick="{{ ch.onPick }}" style="flex:1;border:none;border-radius:5px;padding:4px 0;font-size:12px;cursor:pointer;background:{{ ch.bg }};color:{{ ch.color }};font-weight:600;box-shadow:{{ ch.shadow }}">{{ ch.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ VIEWER TAB ============ -->
+  <sc-if value="{{ onViewerTab }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex:1;min-height:0">
+
+    <!-- ---- AI Settings right sidebar (order:10 puts it at the far right) ---- -->
+    <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="order:-10;width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+        <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
+          AI Settings <span style="font-size:12px">⟨</span>
+        </button>
+        <div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:13px">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Provider</label>
+            <select value="{{ aiProvider }}" onChange="{{ setAiProvider }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ providers }}" as="p" hint-placeholder-count="4"><option value="{{ p.id }}">{{ p.label }}</option></sc-for>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Model</label>
+            <select value="{{ aiModelSel }}" onChange="{{ setAiModelSel }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
+            </select>
+            <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Temperature: {{ aiTemp }}
+              </label>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+            </div>
+            <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Max tokens
+              </label>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+            </div>
+          </div>
+          <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:700;color:var(--muted)">Token parameter</label>
+              <select value="{{ aiTokParam }}" onChange="{{ setAiTokParam }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+                <option value="max_tokens">max_tokens</option>
+                <option value="max_completion_tokens">max_completion_tokens</option>
+              </select>
+              <div style="font-size:10.5px;color:var(--muted3);line-height:1.4">Some newer models reject max_tokens — if so, this switches automatically on retry.</div>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <label style="font-size:11px;font-weight:700;color:var(--muted)">System Prompt</label>
+              <button onClick="{{ resetAiSystem }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset to default</button>
+            </div>
+            <textarea value="{{ aiSystem }}" onChange="{{ setAiSystem }}" spellCheck="{{ false }}" style="border:1px solid var(--border3);border-radius:6px;padding:8px;font-size:11.5px;line-height:1.5;background:var(--surface);font-family:ui-monospace,Menlo,monospace;min-height:170px;resize:vertical"></textarea>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted3);line-height:1.5">Settings are stored only in your browser, saved separately per provider. Your API key never leaves this device except to call the provider directly.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ---- Collapsed AI settings bar ---- -->
+    <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ toggleAi }}" style="order:-10;width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
+      </button>
+    </sc-if>
+
+    <!-- ---- Main column ---- -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <!-- toolbar -->
+      <div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 18px;border-bottom:1px solid var(--border2);background:var(--surface2);flex:none">
+        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+          <button onClick="{{ setModeEdit }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ editBtnBg }};color:{{ editBtnColor }};font-weight:600;box-shadow:{{ editBtnShadow }}">Edit</button>
+          <button onClick="{{ setModeView }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ viewBtnBg }};color:{{ viewBtnColor }};font-weight:600;box-shadow:{{ viewBtnShadow }}">View</button>
+        </div>
+        <div style="width:1px;height:20px;background:var(--border)"></div>
+        <div style="position:relative;display:flex;align-items:center">
+          <select value="{{ promptSel }}" onChange="{{ onPromptPick }}" style="border:1px solid var(--border3);border-radius:6px;padding:4px 6px;font-size:12px;background:var(--surface);cursor:pointer;max-width:180px">
+            <option value="__none" disabled="{{ true }}" hidden="{{ true }}">Unsaved template</option>
+            <option value="__sample">★ Default template</option>
+            <sc-for list="{{ promptNames }}" as="pn" hint-placeholder-count="0"><option value="{{ pn }}">{{ pn }}</option></sc-for>
+            <option value="__manage">🗑 Manage templates…</option>
+          </select>
+          <sc-if value="{{ manageOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:32px;left:0;z-index:50;min-width:240px;max-height:300px;overflow:auto;background:var(--surface);border:1px solid var(--border3);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:6px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px 6px;border-bottom:1px solid var(--border2);margin-bottom:4px">
+                <span style="font-size:11.5px;font-weight:600;color:var(--muted)">Saved templates</span>
+                <button onClick="{{ closeManage }}" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted2);padding:0 2px">✕</button>
+              </div>
+              <sc-if value="{{ noSavedPrompts }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:8px;font-size:12px;color:var(--muted2)">No saved templates.</div>
+              </sc-if>
+              <sc-for list="{{ promptRows }}" as="row" hint-placeholder-count="0">
+                <div style="display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:6px" style-hover="background:var(--subtle)">
+                  <span style="flex:1;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.name }}</span>
+                  <button onClick="{{ row.del }}" title="Delete this template" style="border:none;background:none;cursor:pointer;font-size:12px;color:var(--muted2);padding:1px">🗑</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <button onClick="{{ savePrompt }}" title="Save current prompt" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 10px;font-size:12px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">💾 Save</button>
+        <button onClick="{{ importFile }}" title="Open a .md file" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 8px;font-size:12px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">⤒ Open</button>
+        <button onClick="{{ exportFile }}" title="Download as .md" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 8px;font-size:12px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">⤓ Export</button>
+        <div style="flex:1"></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted2)">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:{{ accent }};opacity:.25"></span> deselected = excluded from copy
+        </div>
+      </div>
+
+      <!-- EDIT -->
+      <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+        <textarea value="{{ raw }}" onChange="{{ onRawChange }}" spellCheck="{{ false }}" style="flex:1;width:100%;border:none;resize:none;padding:26px 34px;font:13px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2);background:var(--surface2)"></textarea>
+      </sc-if>
+
+      <!-- VIEW -->
+      <sc-if value="{{ isView }}" hint-placeholder-val="{{ true }}">
+        <div ref="{{ setScrollRef }}" onScroll="{{ onScroll }}" style="flex:1;overflow-y:auto;padding:30px 46px 120px;font-family:{{ contentFontFamily }}">
+          <div>
+          <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="8">
+            <div data-hid="{{ b.hid }}" style="display:flex;align-items:stretch;opacity:{{ b.opacity }};transition:opacity .15s">
+              <div style="flex:none;width:30px;text-align:right;color:var(--faint);font-family:ui-monospace,Menlo,monospace;font-size:10.5px;padding:{{ b.pad }}"><span style="display:inline-block;margin-top:{{ b.numTop }}">{{ b.line }}</span></div>
+              <div style="flex:none;width:3px;margin:0 7px 0 9px;background:{{ b.railColor }};border-radius:2px"></div>
+              <div style="flex:none;width:15px;padding:{{ b.pad }}">
+                <sc-if value="{{ b.hasCollapse }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ b.onCollapse }}" style="border:none;background:none;cursor:pointer;color:var(--faint2);font-size:11px;padding:0;width:14px;margin-top:{{ b.chevTop }}">{{ b.chev }}</button>
+                </sc-if>
+              </div>
+              <div style="flex:none;width:20px;padding:{{ b.pad }}">
+                <sc-if value="{{ b.hasCheck }}" hint-placeholder-val="{{ false }}">
+                  <input type="checkbox" checked="{{ b.checked }}" onChange="{{ b.onToggle }}" style="margin-top:{{ b.checkTop }};accent-color:{{ accent }};cursor:pointer;width:14px;height:14px"></input>
+                </sc-if>
+              </div>
+              <div style="flex:1;min-width:0;padding:{{ b.pad }};margin-left:{{ b.indent }}">{{ b.el }}</div>
+            </div>
+          </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ---- Resize handle ---- -->
+    <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ true }}">
+      <div onMouseDown="{{ startResize }}" style="width:5px;cursor:col-resize;background:var(--border2);flex:none" style-hover="background:{{ accent }}"></div>
+
+      <!-- ---- Right panel ---- -->
+      <div style="width:{{ panelWidthPx }};flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-left:1px solid var(--border);min-height:0">
+        <button onClick="{{ hidePanel }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
+          Outline &amp; Options <span style="font-size:12px">⟩</span>
+        </button>
+
+        <!-- Outline (upper half) -->
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;border-bottom:1px solid var(--border)">
+          <div style="flex:none;padding:9px 12px 5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Outline</div>
+          <div style="flex:1;overflow-y:auto;padding:0 6px 10px">
+            <sc-for list="{{ outline }}" as="o" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:5px;padding:3px 6px 3px {{ o.pad }};border-radius:6px;background:{{ o.bg }};opacity:{{ o.opacity }}" style-hover="background:var(--hover)">
+                <button onClick="{{ o.onCollapse }}" style="border:none;background:none;cursor:pointer;color:var(--faint2);font-size:10px;width:12px;padding:0;visibility:{{ o.chevVis }}">{{ o.chev }}</button>
+                <input type="checkbox" checked="{{ o.checked }}" onChange="{{ o.onToggle }}" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px;flex:none"></input>
+                <a onClick="{{ o.onGo }}" style="font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:{{ o.weight }}">{{ o.text }}</a>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Options (lower half) -->
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column">
+          <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:9px 12px 5px">
+            <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Options</span>
+            <div style="display:flex;gap:4px">
+              <button onClick="{{ optAdd }}" title="Add option" style="border:1px solid var(--border3);background:var(--surface);border-radius:5px;width:20px;height:20px;font-size:12px;cursor:pointer;color:var(--muted);line-height:1">+</button>
+            </div>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:0 8px 12px">
+            <sc-for list="{{ optionGroups }}" as="g" hint-placeholder-count="3">
+              <div style="margin-bottom:2px">
+                <div style="display:flex;align-items:center;gap:5px;padding:4px 4px;border-radius:6px" style-hover="background:var(--hover)">
+                  <button onClick="{{ g.onCollapse }}" style="border:none;background:none;cursor:pointer;color:var(--faint2);font-size:10px;width:12px;padding:0">{{ g.chev }}</button>
+                  <span style="font-size:12px;font-weight:600;color:var(--text2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ g.name }}</span>
+                  <span style="font-size:10.5px;color:var(--muted3);background:var(--hover);border-radius:8px;padding:1px 6px">×{{ g.count }}</span>
+                  <button onClick="{{ g.onRename }}" title="Rename" style="border:none;background:none;cursor:pointer;font-size:11px;color:var(--muted2);padding:1px">✎</button>
+                  <button onClick="{{ g.onEdit }}" title="Edit choices" style="border:none;background:none;cursor:pointer;font-size:11px;color:var(--muted2);padding:1px">⋯</button>
+                  <button onClick="{{ g.onDelete }}" title="{{ g.delTitle }}" style="border:none;background:none;cursor:{{ g.delCursor }};font-size:11px;color:{{ g.delColor }};padding:1px">🗑</button>
+                </div>
+                <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
+                  <sc-for list="{{ g.occurrences }}" as="oc" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:6px;padding:3px 4px 3px 24px;border-radius:6px" style-hover="background:var(--hover)">
+                      <a onClick="{{ oc.onGo }}" title="{{ oc.where }}" style="font-size:11px;color:var(--muted2);cursor:pointer;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">in {{ oc.where }}</a>
+                      <select value="{{ oc.value }}" onChange="{{ oc.onSelect }}" style="font-size:11px;border:1px solid var(--border3);border-radius:5px;background:var(--surface);color:{{ accent }};font-weight:600;padding:1px 3px;max-width:110px;cursor:pointer">
+                        <sc-for list="{{ oc.choices }}" as="c" hint-placeholder-count="3"><option value="{{ c }}">{{ c }}</option></sc-for>
+                      </select>
+                    </div>
+                  </sc-for>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ---- Collapsed panel bar ---- -->
+    <sc-if value="{{ panelClosed }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ showPanel }}" style="width:26px;flex:none;border:none;border-left:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">⟨&nbsp;&nbsp;Outline &amp; Options</span>
+      </button>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- ============ PROMPT WIZARD TAB ============ -->
+  <sc-if value="{{ onBuilderTab }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;display:flex" data-screen-label="Prompt Wizard">
+
+    <!-- ---- AI Settings sidebar (Wizard: no system prompt — it lives on each step) ---- -->
+    <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+        <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
+          AI Settings <span style="font-size:12px">⟨</span>
+        </button>
+        <div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:13px">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Provider</label>
+            <select value="{{ aiProvider }}" onChange="{{ setAiProvider }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ providers }}" as="p" hint-placeholder-count="4"><option value="{{ p.id }}">{{ p.label }}</option></sc-for>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Model</label>
+            <select value="{{ aiModelSel }}" onChange="{{ setAiModelSel }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
+            </select>
+            <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Temperature: {{ aiTemp }}
+              </label>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+            </div>
+            <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Max tokens
+              </label>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+            </div>
+          </div>
+          <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:700;color:var(--muted)">Token parameter</label>
+              <select value="{{ aiTokParam }}" onChange="{{ setAiTokParam }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+                <option value="max_tokens">max_tokens</option>
+                <option value="max_completion_tokens">max_completion_tokens</option>
+              </select>
+              <div style="font-size:10.5px;color:var(--muted3);line-height:1.4">Some newer models reject max_tokens — if so, this switches automatically on retry.</div>
+            </div>
+          </sc-if>
+          <div style="font-size:10.5px;color:var(--muted3);line-height:1.5">No system prompt here — each wizard step has its own, editable on the step itself.</div>
+          <div style="font-size:10.5px;color:var(--muted3);line-height:1.5">Settings are stored only in your browser, saved separately per provider. Your API key never leaves this device except to call the provider directly.</div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ toggleAi }}" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
+      </button>
+    </sc-if>
+
+    <div style="flex:1;min-width:0;min-height:0;display:flex;flex-direction:column">
+
+      <!-- Step progress bar -->
+      <div style="flex:none;display:flex;align-items:center;padding:12px 20px 6px;overflow-x:auto">
+        <sc-for list="{{ wizSteps }}" as="ws" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;flex:none">
+            <sc-if value="{{ ws.notFirst }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:18px;height:1px;background:var(--border3);margin:0 4px"></span></sc-if>
+            <button onClick="{{ ws.onGo }}" style="display:flex;align-items:center;gap:7px;border:1px solid {{ ws.border }};background:{{ ws.bg }};border-radius:999px;height:28px;padding:0 12px 0 5px;cursor:pointer;font-size:12px;font-weight:600;color:{{ ws.color }};max-width:210px" style-hover="border-color:var(--border3)">
+              <span style="width:18px;height:18px;border-radius:50%;background:{{ ws.numBg }};color:{{ ws.numColor }};display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex:none">{{ ws.num }}</span>
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ws.label }}</span>
+            </button>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- STEP: STRUCTURE -->
+      <sc-if value="{{ wizOnStructure }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr;gap:12px;padding:6px 20px 12px">
+
+          <!-- Left: inputs -->
+          <div style="min-height:0;display:flex;flex-direction:column;gap:10px">
+            <div style="flex:1.3;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <div style="display:flex;align-items:baseline;gap:10px">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Initial Input</span>
+                <span style="font-size:11.5px;color:var(--muted3)">Your idea or rough prompt — the AI suggests a structure from it</span>
+              </div>
+              <textarea value="{{ wizInput }}" onChange="{{ setWizInput }}" spellCheck="{{ false }}" placeholder="Describe what the final prompt should do, e.g. 'a prompt that reviews pull requests for security issues'…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+            </div>
+
+            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <div style="display:flex;align-items:center;justify-content:space-between;min-height:16px">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona</span>
+                <div style="display:flex;align-items:center;gap:7px">
+                  <sc-if value="{{ wizPersonaCustom }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ wizSavePersona }}" title="Save the edited prompt as this persona's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
+                    <button onClick="{{ resetWizPersona }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
+                  </sc-if>
+                  <button onClick="{{ wizAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
+                  <button onClick="{{ wizRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
+                  <button onClick="{{ wizDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+                </div>
+              </div>
+              <select value="{{ wizPersona }}" onChange="{{ setWizPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
+                <sc-for list="{{ wizPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
+              </select>
+              <textarea value="{{ wizPersonaPromptV }}" onChange="{{ setWizPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+            </div>
+
+            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <div style="display:flex;align-items:center;justify-content:space-between;min-height:16px">
+                <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Structure</span>
+                <div style="display:flex;align-items:center;gap:7px">
+                  <sc-if value="{{ wizStructCustom }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ wizSaveStruct }}" title="Save the edited prompt as this structure's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
+                    <button onClick="{{ resetWizStruct }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
+                  </sc-if>
+                  <button onClick="{{ wizAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
+                  <button onClick="{{ wizRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
+                  <button onClick="{{ wizDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+                </div>
+              </div>
+              <select value="{{ wizStructName }}" onChange="{{ setWizStructSel }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
+                <sc-for list="{{ wizStructNames }}" as="sn" hint-placeholder-count="4"><option value="{{ sn }}">{{ sn }}</option></sc-for>
+              </select>
+              <textarea value="{{ wizStructPromptV }}" onChange="{{ setWizStructPrompt }}" spellCheck="{{ false }}" title="Structure guidance sent to the model when suggesting sections" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+            </div>
+
+            <div style="flex:none;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+              <button onClick="{{ toggleWizStructSys }}" style="display:flex;align-items:center;gap:7px;border:none;background:none;cursor:pointer;padding:0;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);text-align:left">
+                <span>{{ wizStructSysChev }}</span> Step System Prompt · Generate Structure
+              </button>
+              <sc-if value="{{ wizStructSysOpen }}" hint-placeholder-val="{{ false }}">
+                <textarea value="{{ wizStructSysV }}" onChange="{{ setWizStructSysV }}" spellCheck="{{ false }}" style="width:100%;resize:vertical;min-height:130px;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+                <button onClick="{{ resetWizStructSys }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;align-self:flex-start">Reset to default</button>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- Right: suggested structure -->
+          <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Suggested Structure</span>
+              <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+                <button onClick="{{ wizViewTree }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ wizTreeBg }};color:{{ wizTreeColor }};font-weight:600;box-shadow:{{ wizTreeShadow }}">Tree</button>
+                <button onClick="{{ wizViewRaw }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ wizRawBg }};color:{{ wizRawColor }};font-weight:600;box-shadow:{{ wizRawShadow }}">Raw</button>
+              </div>
+            </div>
+            <sc-if value="{{ wizNoItems }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted3);border:2px dashed var(--border2);border-radius:8px">
+                <div style="font-size:22px">▤</div>
+                <div style="font-size:12.5px;max-width:280px;text-align:center;line-height:1.6">Describe your idea on the left, then press <strong>✦ Generate Structure</strong>. The suggested sections appear here — rename, reorder, or deselect them before writing content.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ wizShowTree }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;min-height:0;overflow-y:auto;border:1px solid var(--border2);background:var(--bg);border-radius:8px;padding:8px 10px">
+                <sc-for list="{{ wizTree }}" as="wt" hint-placeholder-count="6">
+                  <div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;margin-left:{{ wt.indent }};border-radius:6px;opacity:{{ wt.opacity }}" style-hover="background:#f1eee8">
+                    <input type="checkbox" checked="{{ wt.checked }}" onChange="{{ wt.onToggle }}" title="Include this section" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px;flex:none;margin-top:3px"></input>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:{{ wt.weight }};color:var(--text2)">{{ wt.title }}</span>
+                      <sc-if value="{{ wt.hasDesc }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size:11px;color:var(--muted3);line-height:1.4">{{ wt.desc }}</span>
+                      </sc-if>
+                    </div>
+                    <button onClick="{{ wt.onRename }}" title="Rename" style="border:none;background:none;cursor:pointer;font-size:12px;color:var(--muted2);padding:2px 4px;flex:none">✎</button>
+                    <button onClick="{{ wt.onUp }}" disabled="{{ wt.upDis }}" title="Move up" style="border:none;background:none;cursor:pointer;font-size:12px;color:{{ wt.upColor }};padding:2px 4px;flex:none">↑</button>
+                    <button onClick="{{ wt.onDown }}" disabled="{{ wt.downDis }}" title="Move down" style="border:none;background:none;cursor:pointer;font-size:12px;color:{{ wt.downColor }};padding:2px 4px;flex:none">↓</button>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;color:var(--muted3)">Unchecked sections are skipped. Each checked section becomes its own wizard step.</div>
+            </sc-if>
+            <sc-if value="{{ wizShowRaw }}" hint-placeholder-val="{{ false }}">
+              <textarea value="{{ wizRaw }}" onChange="{{ setWizRaw }}" spellCheck="{{ false }}" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+              <div style="font-size:11px;color:var(--muted3)">## Section · ### Subsection — one per line, each optionally followed by a plain-text description line. Edits sync with the tree; matching titles keep their generated content.</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- STEP: SECTION CONTENT -->
+      <sc-if value="{{ wizOnSection }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.3fr;gap:12px;padding:6px 20px 12px">
+
+          <!-- Left: inputs -->
+          <div style="min-height:0;display:flex;flex-direction:column;gap:10px">
+            <div style="flex:none;display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Section</span>
+              <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.01em">{{ wizSecTitle }}</div>
+              <sc-if value="{{ wizSecHasDesc }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:12.5px;color:var(--muted);line-height:1.55">{{ wizSecDesc }}</div>
+              </sc-if>
+              <sc-if value="{{ wizSecHasSubs }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;gap:5px">
+                  <sc-for list="{{ wizSecSubs }}" as="sb" hint-placeholder-count="2">
+                    <span title="{{ sb.d }}" style="font-size:11.5px;background:var(--code);border:1px solid var(--border);border-radius:999px;padding:2px 9px;color:var(--muted)">{{ sb.t }}</span>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona · this section</span>
+              <select value="{{ wizSecPersona }}" onChange="{{ setWizSecPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
+                <sc-for list="{{ wizPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
+              </select>
+              <textarea value="{{ wizSecPersonaPromptV }}" onChange="{{ setWizSecPersonaPromptV }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+            </div>
+
+            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Length / Depth</span>
+              <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+                <sc-for list="{{ wizLenChoices }}" as="lc" hint-placeholder-count="3">
+                  <button onClick="{{ lc.onPick }}" style="flex:1;border:none;border-radius:5px;padding:5px 0;font-size:12px;cursor:pointer;background:{{ lc.bg }};color:{{ lc.color }};font-weight:600;box-shadow:{{ lc.shadow }}">{{ lc.label }}</button>
+                </sc-for>
+              </div>
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);margin-top:4px">Extra instructions / context</span>
+              <textarea value="{{ wizSecExtra }}" onChange="{{ setWizSecExtra }}" spellCheck="{{ false }}" placeholder="Optional — domain facts, must-mention points, things to avoid…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+            </div>
+
+            <div style="flex:none;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px">
+              <button onClick="{{ toggleWizContentSys }}" style="display:flex;align-items:center;gap:7px;border:none;background:none;cursor:pointer;padding:0;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);text-align:left">
+                <span>{{ wizContentSysChev }}</span> Step System Prompt · Section Content
+              </button>
+              <sc-if value="{{ wizContentSysOpen }}" hint-placeholder-val="{{ false }}">
+                <textarea value="{{ wizContentSysV }}" onChange="{{ setWizContentSysV }}" spellCheck="{{ false }}" style="width:100%;resize:vertical;min-height:130px;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button onClick="{{ resetWizContentSys }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset to default</button>
+                  <span style="font-size:10.5px;color:var(--muted3)">Shared by all section-content steps.</span>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- Right: output (lite markdown viewer) -->
+          <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="display:flex;align-items:center;gap:10px;min-height:24px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);flex:none">Section Content</span>
+              <span style="font-size:11.5px;color:var(--muted3);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ wizSecStatus }}</span>
+              <sc-if value="{{ wizSecHasContent }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ wizSecCopy }}" style="flex:none;display:flex;align-items:center;gap:5px;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:26px;padding:0 10px;font-size:11.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizSecCopyLabel }}</button>
+                <div style="flex:none;display:flex;background:var(--seg);border-radius:7px;padding:2px">
+                  <button onClick="{{ wizSecViewEdit }}" style="border:none;border-radius:5px;padding:3px 12px;font-size:11.5px;cursor:pointer;background:{{ wizSecEditBg }};color:{{ wizSecEditColor }};font-weight:600;box-shadow:{{ wizSecEditShadow }}">Edit</button>
+                  <button onClick="{{ wizSecViewView }}" style="border:none;border-radius:5px;padding:3px 12px;font-size:11.5px;cursor:pointer;background:{{ wizSecViewBg }};color:{{ wizSecViewColor }};font-weight:600;box-shadow:{{ wizSecViewShadow }}">View</button>
+                </div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ wizSecNoContent }}" hint-placeholder-val="{{ true }}">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:var(--muted3);border:2px dashed var(--border2);border-radius:8px">
+                <div style="font-size:22px">✦</div>
+                <div style="font-size:12.5px;max-width:280px;text-align:center;line-height:1.6">Nothing generated yet. Adjust persona, length and extra instructions, then press <strong>✦ Generate Section</strong>.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ wizSecShowEdit }}" hint-placeholder-val="{{ false }}">
+              <textarea value="{{ wizSecContent }}" onChange="{{ setWizSecContent }}" spellCheck="{{ false }}" title="Editable — your manual edits are kept" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+            </sc-if>
+            <sc-if value="{{ wizSecShowView }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;min-height:0;overflow-y:auto;border:1px solid var(--border2);background:var(--surface2);border-radius:8px;padding:10px 14px;font-family:{{ contentFontFamily }};color:var(--text)">
+                <sc-for list="{{ wizSecBlocks }}" as="wb" hint-placeholder-count="6">
+                  <div style="display:flex;gap:9px;padding:{{ wb.pad }};opacity:{{ wb.opacity }}">
+                    <span style="flex:none;width:15px;padding-top:{{ wb.checkTop }}">
+                      <sc-if value="{{ wb.hasCheck }}" hint-placeholder-val="{{ true }}">
+                        <input type="checkbox" checked="{{ wb.checked }}" onChange="{{ wb.onToggle }}" title="Include in final prompt" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px"></input>
+                      </sc-if>
+                    </span>
+                    <div style="flex:1;min-width:0">{{ wb.el }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ wizSecHasContent }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);margin-top:2px">Regenerate with feedback</span>
+              <textarea value="{{ wizSecFeedback }}" onChange="{{ setWizSecFeedback }}" spellCheck="{{ false }}" placeholder="What should change? e.g. 'shorter, more options, focus on security'. Then press Regenerate." style="flex:none;height:52px;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- STEP: REVIEW -->
+      <sc-if value="{{ wizOnReview }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;min-height:0;display:flex;flex-direction:column;padding:6px 20px 12px">
+          <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="display:flex;align-items:baseline;gap:10px;min-height:18px">
+              <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Assembled Prompt</span>
+              <span style="font-size:11.5px;color:{{ wizMissingColor }}">{{ wizMissingNote }}</span>
+            </div>
+            <textarea value="{{ wizAssembled }}" readOnly="{{ true }}" spellCheck="{{ false }}" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:12px 14px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+            <div style="font-size:11px;color:var(--muted3)">Deselected sections and unchecked blocks are left out. To change a section, click its step above and regenerate or edit it there.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- Footer -->
+      <div style="flex:none;display:flex;align-items:center;gap:10px;padding:10px 20px;border-top:1px solid var(--border);background:var(--surface)">
+        <span style="font-size:11px;color:var(--muted3)">{{ wizFootNote }}</span>
+        <div style="flex:1"></div>
+        <sc-if value="{{ wizOnStructure }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ wizGenStructure }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenStructLabel }}</button>
+          <sc-if value="{{ wizHasItems }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{ wizOnSection }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
+          <button onClick="{{ wizGenSection }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenSecLabel }}</button>
+          <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ wizOnReview }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
+          <button onClick="{{ wizCopy }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizCopyLabel }}</button>
+          <button onClick="{{ wizOpenViewer }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">Open in Markdown Viewer →</button>
+        </sc-if>
+      </div>
+    </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ ENRICH PROMPT TAB ============ -->
+  <sc-if value="{{ onWorkshopTab }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;display:flex" data-screen-label="Enrich Prompt">
+
+    <!-- ---- AI Settings sidebar (Enrich) ---- -->
+    <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+        <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
+          AI Settings <span style="font-size:12px">⟨</span>
+        </button>
+        <div style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:13px">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Provider</label>
+            <select value="{{ aiProvider }}" onChange="{{ setAiProvider }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ providers }}" as="p" hint-placeholder-count="4"><option value="{{ p.id }}">{{ p.label }}</option></sc-for>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Model</label>
+            <select value="{{ aiModelSel }}" onChange="{{ setAiModelSel }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+              <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
+            </select>
+            <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Temperature: {{ aiTemp }}
+              </label>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+            </div>
+            <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
+              <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                Max tokens
+              </label>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+            </div>
+          </div>
+          <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <label style="font-size:11px;font-weight:700;color:var(--muted)">Token parameter</label>
+              <select value="{{ aiTokParam }}" onChange="{{ setAiTokParam }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);cursor:pointer">
+                <option value="max_tokens">max_tokens</option>
+                <option value="max_completion_tokens">max_completion_tokens</option>
+              </select>
+              <div style="font-size:10.5px;color:var(--muted3);line-height:1.4">Some newer models reject max_tokens — if so, this switches automatically on retry.</div>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <label style="font-size:11px;font-weight:700;color:var(--muted)">Enrich System Prompt</label>
+              <button onClick="{{ resetEnSystem }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset to default</button>
+            </div>
+            <textarea value="{{ enSystem }}" onChange="{{ setEnSystem }}" spellCheck="{{ false }}" style="border:1px solid var(--border3);border-radius:6px;padding:8px;font-size:11.5px;line-height:1.5;background:var(--surface);font-family:ui-monospace,Menlo,monospace;min-height:200px;resize:vertical"></textarea>
+            <div style="font-size:10.5px;color:var(--muted3);line-height:1.4">Used only by this tab. The Structure, Persona and Mode instructions are appended after it — including the [option name](ph:choice 1|choice 2) output syntax above.</div>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted3);line-height:1.5">Settings are stored only in your browser, saved separately per provider. Your API key never leaves this device except to call the provider directly.</div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ toggleAi }}" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
+      </button>
+    </sc-if>
+
+    <div style="flex:1;min-width:0;min-height:0;display:flex;flex-direction:column">
+
+      <!-- Input prompt (top third) -->
+      <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;padding:14px 20px 8px">
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Input Prompt</span>
+          <span style="font-size:11.5px;color:var(--muted3)">Rough idea in — structured, reusable prompt out</span>
+        </div>
+        <textarea value="{{ enInput }}" onChange="{{ setEnInput }}" spellCheck="{{ false }}" placeholder="Type a rough prompt about anything, e.g. 'a calculator application'…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:13px 16px;font:13.5px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+      </div>
+
+      <!-- Sections (bottom two thirds) -->
+      <div style="flex:2;min-height:0;display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:12px;padding:6px 20px 12px">
+
+        <!-- MODE -->
+        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Mode</span>
+            <sc-if value="{{ enModeCustom }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ resetEnMode }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset to default</button>
+            </sc-if>
+          </div>
+          <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
+            <sc-for list="{{ enModes }}" as="em" hint-placeholder-count="3">
+              <button onClick="{{ em.onPick }}" style="flex:1;border:none;border-radius:5px;padding:5px 0;font-size:12px;cursor:pointer;background:{{ em.bg }};color:{{ em.color }};font-weight:600;box-shadow:{{ em.shadow }}">{{ em.label }}</button>
+            </sc-for>
+          </div>
+          <div style="font-size:12px;color:var(--muted2);line-height:1.5">{{ enModeSummary }}</div>
+          <textarea value="{{ enModePrompt }}" onChange="{{ setEnModePrompt }}" spellCheck="{{ false }}" title="Mode instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+        </div>
+
+        <!-- PERSONA -->
+        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona</span>
+            <div style="display:flex;align-items:center;gap:7px">
+              <sc-if value="{{ enPersonaCustom }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ enSavePersona }}" title="Save the edited prompt as this persona's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
+                <button onClick="{{ resetEnPersona }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
+              </sc-if>
+              <button onClick="{{ enAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
+              <button onClick="{{ enRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
+              <button onClick="{{ enDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+            </div>
+          </div>
+          <select value="{{ enPersona }}" onChange="{{ setEnPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
+            <sc-for list="{{ enPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
+          </select>
+          <div style="font-size:12px;color:var(--muted2);line-height:1.5">From which perspective the result is written.</div>
+          <textarea value="{{ enPersonaPrompt }}" onChange="{{ setEnPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+        </div>
+
+        <!-- STRUCTURE -->
+        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Structure</span>
+            <div style="display:flex;align-items:center;gap:7px">
+              <sc-if value="{{ enStructCustom }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ enSaveStruct }}" title="Save the edited prompt as this structure's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
+                <button onClick="{{ resetEnStruct }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
+              </sc-if>
+              <button onClick="{{ enAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
+              <button onClick="{{ enRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
+              <button onClick="{{ enDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+            </div>
+          </div>
+          <select value="{{ enStruct }}" onChange="{{ setEnStruct }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
+            <sc-for list="{{ enStructNames }}" as="sn" hint-placeholder-count="4"><option value="{{ sn }}">{{ sn }}</option></sc-for>
+          </select>
+          <div style="flex:none;max-height:38%;overflow-y:auto;border:1px solid var(--border2);background:var(--bg);border-radius:8px;padding:8px 11px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.7;color:var(--text3)">
+            <div style="display:flex;gap:7px;align-items:center"><span style="color:{{ accent }}">▣</span><span style="font-weight:700;color:var(--text2)">Prompt</span></div>
+            <sc-for list="{{ enTree }}" as="t" hint-placeholder-count="5">
+              <div style="display:flex;gap:7px"><span style="color:var(--faint);padding-left:5px">{{ t.conn }}</span><span>{{ t.name }}</span></div>
+            </sc-for>
+            <sc-if value="{{ enTreeEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="color:var(--muted3);padding-left:12px">└ no "- Section" bullets found in the prompt</div>
+            </sc-if>
+          </div>
+          <textarea value="{{ enStructPrompt }}" onChange="{{ setEnStructPrompt }}" spellCheck="{{ false }}" title="Structure instruction sent to the model — the section tree above is read from its bullets" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px;border-top:1px solid var(--border);background:var(--surface)">
+        <span style="font-size:11px;color:var(--muted3)">System (in AI Settings) + Structure + Persona + Mode · full prompt is logged to the console</span>
+        <div style="flex:1"></div>
+        <button onClick="{{ enGenerate }}" disabled="{{ enGenerating }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ enGenLabel }}</button>
+      </div>
+    </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;light&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Appearance&quot;}, &quot;accentColor&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#0F766E&quot;, &quot;options&quot;: [&quot;#0F766E&quot;, &quot;#2A6FDB&quot;, &quot;#B4552D&quot;, &quot;#6D28D9&quot;, &quot;#BE185D&quot;, &quot;#4D7C0F&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Appearance&quot;}, &quot;selectorStyle&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;pill&quot;, &quot;options&quot;: [&quot;pill&quot;, &quot;underline&quot;, &quot;boxed&quot;, &quot;plain&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Appearance&quot;}, &quot;contentFont&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;serif&quot;, &quot;options&quot;: [&quot;serif&quot;, &quot;sans&quot;, &quot;atkinson&quot;, &quot;lexend&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Appearance&quot;}}">
+const SAMPLE = `# Product Launch Announcement
+
+Write a [tone](ph:professional|casual|excited) announcement for our new product aimed at [audience](ph:developers|executives|general public). Keep it [length](ph:short|medium|long).
+
+## Key Messages
+
+- Emphasize the 10x speed improvement
+- Mention the [pricing angle](ph:free tier|discount|value)
+- Include a call to action in a [tone](ph:professional|casual|excited) voice
+- Reference customer success stories
+
+## Structure
+
+1. Hook the reader in the first sentence
+2. Explain the core benefit
+3. Close with next steps
+
+### Formatting Rules
+
+- Use short paragraphs
+- No jargon unless audience is developers
+
+## Channels
+
+| Channel | Max Length | Priority |
+| --- | --- | --- |
+| Email | 300 words | High |
+| Twitter/X | 280 chars | [priority](ph:High|Medium|Low) |
+| Blog | 800 words | High |
+| LinkedIn | 500 words | Low |
+
+## Constraints
+
+> Tip: an *excited* tone performs best on social channels — but **never** in email.
+
+Example sign-off snippet:
+
+\`\`\`
+Try it free today — no credit card required.
+— The Product Team
+\`\`\`
+
+---
+
+Never overpromise. Cite real benchmarks where possible, and keep the [tone](ph:professional|casual|excited) consistent across channels.
+`;
+
+const DEFAULT_SYS = `You convert a plain markdown prompt into a templated prompt with a small number of high-value inline options, using exactly this format: [option name](ph:choice 1|choice 2|choice 3)
+
+WHAT QUALIFIES as an option — only deliberate authoring knobs the writer would plausibly want to switch between runs:
+- tone / voice / style (professional, casual, playful…)
+- target audience or persona
+- length / level of detail
+- output format or channel (email, tweet, report…)
+- language, reading level, point of view
+- an explicit priority/level word that is clearly a setting
+
+WHAT DOES NOT qualify — never wrap these:
+- facts, data, numbers, benchmarks, dates, prices
+- proper nouns, product/company/person names
+- instructions, rules, and constraints themselves ("no jargon", "cite sources")
+- structural words, verbs, or arbitrary adjectives where alternatives wouldn't meaningfully change the output
+- anything inside code blocks, URLs, or existing [x](ph:…) options
+
+RULES:
+- Be selective: typically 3-8 options total for a document. If nothing qualifies, return the text unchanged.
+- Each option must offer genuinely distinct, mutually exclusive choices — not synonyms.
+- Put the original/most likely value as the first choice; 2-5 concise choices per option.
+- Reuse the exact same option name for the same concept everywhere it appears.
+- Do not change any other text, structure, or formatting.
+Return ONLY the resulting markdown. No explanations, no code fences.`;
+
+const ENRICH_CONTRACT = `OUTPUT FORMAT (STRICT):
+Return ONLY a markdown document. No commentary before or after it, and no code fence around the whole output.
+- Use #, ## and ### headings for sections. Use "- " bullets or "1. " numbered steps for enumerable content.
+- Turn variable or decision-like values into inline options using exactly this syntax: [option name](ph:choice 1|choice 2|choice 3)
+  - The FIRST choice is the default. Give 2-5 distinct, realistic choices. Reuse the exact same option name for the same concept everywhere it appears.
+- Put options inline exactly where the value belongs; never list them in a separate section. If a value has no real alternatives, write it as plain text.`;
+
+const ENRICH_SYS = `You are an expert prompt engineer. Rewrite the user's rough prompt into a clear, well-structured, reusable markdown prompt that another LLM can follow with minimal ambiguity.
+
+Follow the STRUCTURE, PERSONA and MODE instructions below. Be specific and actionable; cut filler, restatements, and generic advice. Never invent facts — prefer explicit assumptions and inline options over pretending unknown details are known.
+
+` + ENRICH_CONTRACT;
+
+const ENRICH_MODES = {
+  enhance: {
+    label: 'Enhance',
+    summary: 'Clarify and restructure the prompt without adding depth or changing its scope.',
+    prompt: `MODE = ENHANCE. Improve the clarity, precision, and structure of the user's prompt without changing its scope. Resolve ambiguity, tighten wording, and reorganize the content into clean, logical, self-contained sections. Do NOT add a new layer of depth, invent requirements, or introduce details the prompt does not already imply. Preserve the original intent and stay at the same conceptual level.`,
+  },
+  expand: {
+    label: 'Expand',
+    summary: 'Take the prompt exactly one level deeper — make the implicit explicit.',
+    prompt: `MODE = EXPAND. Take the prompt exactly one level deeper. Make implicit aspects explicit and add the reasonable, high-level detail a knowledgeable practitioner would expect — e.g. an application idea expands into features, constraints, platform, interface, and data, each under its own heading. Add depth through sensible defaults and inline options, not low-level implementation. Mark anything uncertain as an assumption or option rather than stating it as fact.`,
+  },
+  plan: {
+    label: 'Plan',
+    summary: 'Turn the prompt into an ordered execution plan — plan the work, don\u2019t do it.',
+    prompt: `MODE = PLAN. Convert the user's prompt into a practical, ordered execution plan — plan the work, do NOT perform it. Use sections such as Objective, Assumptions, Scope, Steps, Dependencies, Risks / Mitigations, Validation, and Deliverables, expressing ordered steps as numbered items. Keep each step concrete enough that another person or assistant could follow it, and use inline options for decisions the user must still make (scope, owners, timeline, definition of done).`,
+  },
+};
+
+const ENRICH_PERSONAS = {
+  'None': '',
+  'Product Manager': 'Adopt the perspective of an experienced product manager. Prioritize user value, clear problem framing, target users, scope and prioritization, success metrics, and explicit tradeoffs. Surface assumptions and open questions, and frame sections around outcomes rather than implementation.',
+  'Senior Software Engineer': 'Adopt the perspective of a senior software engineer. Emphasize architecture, components and interfaces, data flow, constraints, edge cases, failure modes, testing, and maintainability. Treat unspecified technical decisions as options rather than assuming them.',
+  'Technical Writer': 'Adopt the perspective of a technical writer. Optimize for the reader: clarity, the right audience level, logical structure, consistent terminology, and documentation that is complete yet concise. Prefer precise, unambiguous wording.',
+  'UX Designer': 'Adopt the perspective of a UX designer. Focus on user goals, primary flows and edge cases, information architecture, interaction and state design, accessibility, and usability criteria. Frame sections around the user journey.',
+  'Data Scientist': 'Adopt the perspective of a data scientist. Emphasize the question, available data and its limitations, assumptions, metrics and baselines, methodology, and validation, and be explicit about how results should be interpreted. Avoid asserting findings the data cannot support.',
+};
+
+const ENRICH_STRUCTURES = {
+  'Standard \u00b7 Role / Rules / Context / Input / Output': `Structure the output around these sections where relevant:
+- Role: who the target model should act as and the expertise it should bring
+- Rules: constraints, priorities, boundaries, and required behaviors
+- Context: background, domain facts, assumptions, references
+- Input: what the future user will supply, with inline options for variable values
+- Output: the expected deliverable's format, depth, tone, and success criteria
+
+Keep sections self-contained and independently useful. Express enumerable content as individual bullets rather than dense paragraphs.`,
+  'Minimal \u00b7 loose': `Keep the structure loose and light. Include only the sections that are clearly needed, chosen from:
+- Goal
+- Context
+- Instructions
+- Output Format
+
+Prefer brevity and direct usefulness; do not add sections just to fill a template.`,
+  'Spec-driven \u00b7 strict': `Structure the output as a precise specification with these sections:
+- Objective
+- Users / Stakeholders
+- Functional Requirements
+- Nonfunctional Requirements
+- Constraints
+- Acceptance Criteria
+- Open Questions
+
+Express each requirement and criterion as its own bullet so it can be reviewed independently. Capture unknowns under Open Questions instead of inventing answers.`,
+  'Execution Plan': `Structure the output as an execution plan with these sections:
+- Objective
+- Assumptions
+- Scope
+- Steps
+- Dependencies
+- Risks / Mitigations
+- Validation
+- Deliverables
+
+Number the steps. Keep each step concrete enough for someone else to follow without extra context.`,
+  'Research Brief': `Structure the output as a research brief with these sections:
+- Research Question
+- Background
+- Scope and Exclusions
+- Source Requirements
+- Methodology
+- Deliverables
+
+Require sources and uncertainty to be stated rather than asserting unverified claims.`,
+};
+
+const WIZ_STRUCT_SYS = `You are an expert prompt architect. Analyze the user's initial input — a rough idea or draft prompt — and propose the SECTION STRUCTURE of a well-organized, reusable prompt document. Do not write the content of any section.
+
+Follow the STRUCTURE and PERSONA instructions below when choosing and naming sections.
+
+OUTPUT FORMAT (STRICT):
+Return ONLY markdown in this exact pattern:
+- "## Section Name" for top-level sections (4-8 of them), each followed on the next line by a single one-sentence description of what that section covers
+- "### Subsection Name" beneath a section, only when it genuinely needs subdivision (0-4 each), each also followed by its one-line description
+No document title, no bullets, no commentary, no code fences.`;
+
+const WIZ_CONTENT_SYS = `You are an expert prompt engineer writing ONE section of a larger prompt document. Write only the requested section — never other sections, and no commentary.
+
+Follow the PERSONA instruction below. Be specific and actionable; cut filler and generic advice. Never invent facts — prefer explicit assumptions and inline options over pretending unknown details are known.
+
+OUTPUT FORMAT (STRICT):
+- Start with the section's "## Heading" exactly as given, and cover its "### Subheadings" where provided.
+- Use "- " bullets or "1. " numbered steps for enumerable content.
+- Turn variable or decision-like values into inline options using exactly this syntax: [option name](ph:choice 1|choice 2|choice 3) — the FIRST choice is the default; give 2-5 distinct, realistic choices, placed inline where the value belongs.
+Return ONLY the section's markdown. No code fence around it.`;
+
+const WIZ_LENGTHS = {
+  Concise: 'Concise — a few tight bullets per heading; only what is essential.',
+  Standard: 'Standard — cover the section fully but without exhaustive detail.',
+  Detailed: 'Detailed — thorough coverage: edge cases, assumptions, and inline options for open decisions.',
+};
+
+const PROVIDERS = [
+  { id: 'openai', label: 'OpenAI', model: 'gpt-4o-mini', base: 'https://api.openai.com',
+    models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-mini', 'gpt-4.1', 'o4-mini', 'o3'] },
+  { id: 'claude', label: 'Claude (Anthropic)', model: 'claude-sonnet-4-5', base: 'https://api.anthropic.com',
+    models: ['claude-sonnet-4-5', 'claude-opus-4-5', 'claude-haiku-4-5', 'claude-3-5-haiku-latest'] },
+  { id: 'gemini', label: 'Gemini (Google)', model: 'gemini-2.5-flash', base: 'https://generativelanguage.googleapis.com',
+    models: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'] },
+  { id: 'local', label: 'Local (Ollama)', model: 'llama3.1', base: 'http://localhost:11434',
+    models: ['llama3.1', 'llama3.2', 'mistral', 'qwen2.5', 'gemma2'] },
+  { id: 'openrouter', label: 'OpenRouter', model: 'openrouter/auto', base: 'https://openrouter.ai/api',
+    models: ['openrouter/auto', 'anthropic/claude-sonnet-4.5', 'openai/gpt-4o-mini', 'google/gemini-2.5-flash', 'deepseek/deepseek-chat-v3.1'] },
+  { id: 'zai', label: 'Z.ai (GLM)', model: 'glm-4.6', base: 'https://api.z.ai', chatPath: '/api/paas/v4/chat/completions',
+    models: ['glm-4.6', 'glm-4.5', 'glm-4.5-air', 'glm-4.5-flash'] },
+  { id: 'qwen', label: 'Qwen (Alibaba)', model: 'qwen-plus', base: 'https://dashscope-intl.aliyuncs.com/compatible-mode',
+    models: ['qwen-plus', 'qwen-max', 'qwen-turbo', 'qwen3-max'] },
+  { id: 'minimax', label: 'MiniMax', model: 'MiniMax-M2', base: 'https://api.minimax.io',
+    models: ['MiniMax-M2', 'MiniMax-M1', 'MiniMax-Text-01'] },
+  { id: 'grok', label: 'Grok (xAI)', model: 'grok-4-fast', base: 'https://api.x.ai',
+    models: ['grok-4-fast', 'grok-4', 'grok-3', 'grok-3-mini'] },
+  { id: 'groq', label: 'Groq', model: 'llama-3.3-70b-versatile', base: 'https://api.groq.com/openai',
+    models: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'moonshotai/kimi-k2-instruct', 'qwen/qwen3-32b'] },
+  { id: 'custom', label: 'Custom (OpenAI-compatible)', model: '', base: '', models: [] },
+];
+
+class Component extends DCLogic {
+  state = {
+    tab: 'viewer', mode: 'view', raw: SAMPLE,
+    deselected: {}, optionSel: {}, collapsed: {}, optGroupClosed: {},
+    panelOpen: true, panelWidth: 0.2, currentHid: null, copied: false,
+    settingsOpen: false, custom: {},
+    aiOpen: false, detecting: false,
+    aiCfg: { provider: 'openai', byProvider: {}, systemPrompt: DEFAULT_SYS },
+    lib: { personas: { ...ENRICH_PERSONAS }, structs: { ...ENRICH_STRUCTURES } },
+    enrich: { input: '', mode: 'enhance', persona: 'None', structure: 'Standard \u00b7 Role / Rules / Context / Input / Output', modeOv: {}, personaOv: {}, structOv: {}, system: ENRICH_SYS, generating: false, sysOpen: false },
+    wiz: { step: 'structure', input: '', persona: 'None', personaOv: {}, structure: 'Standard \u00b7 Role / Rules / Context / Input / Output', structOv: {}, structSys: WIZ_STRUCT_SYS, contentSys: WIZ_CONTENT_SYS, items: [], view: 'tree', rawDraft: null, content: {}, secPersona: {}, secExtra: {}, secLen: {}, secFeedback: {}, secDes: {}, secSel: {}, secView: {}, structSysOpen: false, contentSysOpen: false, busy: false, copied: false },
+  };
+
+  componentDidMount() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('mps-state') || 'null');
+      if (saved && typeof saved === 'object') {
+        if (saved.aiCfg) saved.aiCfg = { provider: 'openai', byProvider: {}, systemPrompt: DEFAULT_SYS, ...saved.aiCfg };
+        if (saved.lib) saved.lib = { personas: saved.lib.personas || { ...ENRICH_PERSONAS }, structs: saved.lib.structs || { ...ENRICH_STRUCTURES } };
+        if (saved.enrich) saved.enrich = { ...this.state.enrich, ...saved.enrich, generating: false };
+        const loadStructs = (saved.lib && saved.lib.structs) || ENRICH_STRUCTURES;
+        if (saved.enrich && loadStructs[saved.enrich.structure] === undefined && !(saved.enrich.structOv || {})[saved.enrich.structure]) saved.enrich.structure = Object.keys(loadStructs)[0] || this.state.enrich.structure;
+        if (saved.enrich && String(saved.enrich.system || '').indexOf('(ph:') === -1) saved.enrich.system = ENRICH_SYS;
+        if (saved.wiz) saved.wiz = { ...this.state.wiz, ...saved.wiz, busy: false, rawDraft: null, copied: false };
+        this.setState(saved);
+      }
+    } catch (e) {}
+    this._onMove = (e) => {
+      if (!this._resizing) return;
+      const w = window.innerWidth;
+      const frac = Math.min(0.45, Math.max(0.12, (w - e.clientX) / w));
+      this.setState({ panelWidth: frac });
+    };
+    this._onUp = () => { this._resizing = false; document.body.style.userSelect = ''; };
+    window.addEventListener('mousemove', this._onMove);
+    window.addEventListener('mouseup', this._onUp);
+    this._onDocDown = (e) => {
+      if (!this.state.settingsOpen) return;
+      const t = e.target;
+      if (t && t.closest && (t.closest('[data-cust-pop]') || t.closest('[data-cust-btn]'))) return;
+      this.setState({ settingsOpen: false });
+    };
+    document.addEventListener('mousedown', this._onDocDown, true);
+    this.applyTheme();
+  }
+  theme() { return this.state.custom.theme ?? this.props.theme ?? 'light'; }
+  applyTheme() {
+    try { document.documentElement.setAttribute('data-theme', this.theme()); } catch (e) {}
+  }
+  componentDidUpdate() {
+    this.applyTheme();
+    clearTimeout(this._pt);
+    this._pt = setTimeout(() => {
+      const s = this.state;
+      const keep = {
+        raw: s.raw, mode: s.mode, tab: s.tab,
+        deselected: s.deselected, optionSel: s.optionSel,
+        collapsed: s.collapsed, optGroupClosed: s.optGroupClosed,
+        panelOpen: s.panelOpen, panelWidth: s.panelWidth,
+        custom: s.custom, noOptNever: s.noOptNever, aiCfg: s.aiCfg, promptName: s.promptName, lib: s.lib,
+        enrich: { ...s.enrich, generating: false },
+        wiz: { ...s.wiz, busy: false, rawDraft: null, copied: false },
+      };
+      try { localStorage.setItem('mps-state', JSON.stringify(keep)); } catch (e) {}
+    }, 300);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('mousemove', this._onMove);
+    window.removeEventListener('mouseup', this._onUp);
+    document.removeEventListener('mousedown', this._onDocDown, true);
+  }
+
+  // ---------- parsing ----------
+  parse(raw) {
+    const lines = raw.split('\n');
+    const blocks = [];
+    let stack = []; // heading stack {id, level}
+    let i = 0, bi = 0;
+    const anc = () => stack.map(s => s.id);
+    while (i < lines.length) {
+      const line = lines[i];
+      if (/^\s*$/.test(line)) { i++; continue; }
+      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) {
+        const level = h[1].length;
+        while (stack.length && stack[stack.length - 1].level >= level) stack.pop();
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'h', level, text: h[2], raw: line, ancestors: anc(), srcLine: i + 1 });
+        stack.push({ id, level });
+        i++; continue;
+      }
+      if (/^```/.test(line)) {
+        const start = i; const lang = line.slice(3).trim(); i++;
+        const body = [];
+        while (i < lines.length && !/^```/.test(lines[i])) { body.push(lines[i]); i++; }
+        const hasEnd = i < lines.length; if (hasEnd) i++;
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'code', lang, body, text: '', raw: [lines[start]].concat(body, hasEnd ? [lines[i - 1]] : []).join('\n'), ancestors: anc(), srcLine: start + 1 });
+        continue;
+      }
+      if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'hr', text: '', raw: line, ancestors: anc(), srcLine: i + 1 });
+        i++; continue;
+      }
+      if (/^\s*>/.test(line)) {
+        const start = i; const qlines = [];
+        while (i < lines.length && /^\s*>/.test(lines[i])) { qlines.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'quote', qlines, text: qlines.join('\n'), raw: lines.slice(start, i).join('\n'), ancestors: anc(), srcLine: start + 1 });
+        continue;
+      }
+      if (/^\s*\|/.test(line)) {
+        const start = i;
+        const rows = [];
+        while (i < lines.length && /^\s*\|/.test(lines[i])) { rows.push(lines[i]); i++; }
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'table', rows, raw: rows.join('\n'), ancestors: anc(), srcLine: start + 1 });
+        continue;
+      }
+      const li = line.match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+      if (li) {
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'li', marker: /\d/.test(li[2]) ? li[2] : '•', liIndent: li[1].length, text: li[3], raw: line, ancestors: anc(), srcLine: i + 1 });
+        i++; continue;
+      }
+      const id = 'b' + (bi++);
+      blocks.push({ id, type: 'p', text: line, raw: line, ancestors: anc(), srcLine: i + 1 });
+      i++;
+    }
+    // assign option occurrence ids
+    const occs = [];
+    const re = /\[([^\]]+)\]\(ph:([^)]+)\)/g;
+    for (const b of blocks) {
+      let k = 0, m;
+      const src = b.type === 'table' ? b.rows.join('\n') : b.text;
+      re.lastIndex = 0;
+      while ((m = re.exec(src))) {
+        occs.push({ occId: b.id + 'o' + (k++), name: m[1], choices: m[2].split('|'), blockId: b.id, block: b });
+      }
+    }
+    return { blocks, occs };
+  }
+
+  isDim(b, des) {
+    if (des[b.id]) return true;
+    return (b.ancestors || []).some(a => des[a]);
+  }
+
+  // ---------- inline rendering ----------
+  renderInline(text, blockId, occCounter) {
+    const parts = [];
+    const re = /\[([^\]]+)\]\(ph:([^)]+)\)|\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*\*([^*]+)\*\*\*|\*\*([^*]+)\*\*|\*([^*]+)\*|_([^_]+)_|<br\s*\/?>/g;
+    let last = 0, m, key = 0;
+    while ((m = re.exec(text))) {
+      if (m.index > last) parts.push(text.slice(last, m.index));
+      if (m[1] !== undefined) {
+        parts.push(this.makeSelect(blockId + 'o' + (occCounter.n++), m[1], m[2].split('|'), key++));
+      } else if (m[3] !== undefined) {
+        parts.push(React.createElement('a', { key: 'k' + key++, href: m[4], style: { color: this.accent(), textDecoration: 'underline' } }, m[3]));
+      } else if (m[5] !== undefined) {
+        parts.push(React.createElement('code', { key: 'k' + key++, style: { background: 'var(--seg)', borderRadius: 4, padding: '1px 5px', fontSize: '0.88em', fontFamily: 'ui-monospace,Menlo,monospace' } }, m[5]));
+      } else if (m[6] !== undefined) {
+        parts.push(React.createElement('strong', { key: 'k' + key++ }, React.createElement('em', null, this.renderInline(m[6], blockId, occCounter))));
+      } else if (m[7] !== undefined) {
+        parts.push(React.createElement('strong', { key: 'k' + key++ }, this.renderInline(m[7], blockId, occCounter)));
+      } else if (m[8] !== undefined || m[9] !== undefined) {
+        parts.push(React.createElement('em', { key: 'k' + key++ }, this.renderInline(m[8] !== undefined ? m[8] : m[9], blockId, occCounter)));
+      } else {
+        parts.push(React.createElement('br', { key: 'k' + key++ }));
+      }
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) parts.push(text.slice(last));
+    return parts;
+  }
+
+  accent() { return this.state.custom.accent ?? this.props.accentColor ?? '#0F766E'; }
+
+  // split a table row into cells, ignoring pipes inside (...) e.g. option syntax
+  splitCells(row) {
+    const out = []; let cur = ''; let d = 0;
+    for (const ch of row) {
+      if (ch === '(') d++; else if (ch === ')') d = Math.max(0, d - 1);
+      if (ch === '|' && d === 0) { out.push(cur); cur = ''; } else cur += ch;
+    }
+    out.push(cur);
+    if (out.length && out[0].trim() === '') out.shift();
+    if (out.length && out[out.length - 1].trim() === '') out.pop();
+    return out.map(c => c.trim());
+  }
+
+  makeSelect(occId, name, choices, key) {
+    const a = this.accent();
+    const scope = this.mdScope();
+    const val = scope.sel[occId] ?? choices[0];
+    const styleKind = this.state.custom.selectorStyle ?? this.props.selectorStyle ?? 'pill';
+    const wrapBase = { display: 'inline-flex', alignItems: 'center', gap: 4, margin: '0 2px', verticalAlign: 'baseline', fontFamily: 'system-ui,sans-serif' };
+    let wrapStyle, selStyle;
+    if (styleKind === 'underline') {
+      wrapStyle = { ...wrapBase };
+      selStyle = { border: 'none', borderBottom: '2px dashed ' + a, background: 'transparent', color: a, fontWeight: 600 };
+    } else if (styleKind === 'boxed') {
+      wrapStyle = { ...wrapBase, border: '1px solid ' + a, borderRadius: 4, padding: '0 2px 0 6px', background: 'var(--surface)' };
+      selStyle = { border: 'none', background: 'transparent', color: a, fontWeight: 600 };
+    } else if (styleKind === 'plain') {
+      wrapStyle = { ...wrapBase, background: a + '1a', borderRadius: 999, padding: '1px 4px' };
+      selStyle = { border: 'none', background: 'transparent', color: a, fontWeight: 600 };
+    } else {
+      wrapStyle = { ...wrapBase, background: a + '1a', borderRadius: 999, padding: '1px 4px 1px 9px' };
+      selStyle = { border: 'none', background: 'transparent', color: a, fontWeight: 600 };
+    }
+    return React.createElement('span', { key: 'sel' + key, style: wrapStyle },
+      styleKind === 'plain' ? null : React.createElement('span', { style: { fontSize: '0.72em', color: 'var(--muted2)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.04em' } }, name),
+      React.createElement('select', {
+        value: val, title: name,
+        onChange: (e) => scope.setSel(occId, e.target.value),
+        style: { ...selStyle, fontSize: '0.85em', cursor: 'pointer', padding: '1px 0' }
+      }, choices.map(c => React.createElement('option', { key: c, value: c }, c)))
+    );
+  }
+
+  makeTable(b, dim) {
+    const a = this.accent();
+    const scope = this.mdScope();
+    const des = scope.des;
+    const rows = b.rows.filter(r => !/^\s*\|[\s\-:|]+\|\s*$/.test(r));
+    const occCounter = { n: 0 };
+    // occurrence ids for tables were assigned scanning joined rows in order — replicate
+    const nCols = rows.length ? this.splitCells(rows[0]).length : 0;
+    const colId = (ci) => b.id + 'c' + ci;
+    const colRow = React.createElement('tr', { key: 'cols' },
+      React.createElement('td', { style: { border: 'none' } }),
+      Array.from({ length: nCols }, (_, ci) => React.createElement('td', { key: ci, style: { border: 'none', textAlign: 'center', paddingBottom: 3 } },
+        React.createElement('input', {
+          type: 'checkbox', checked: !des[colId(ci)], title: 'Select column',
+          onChange: () => scope.toggleDes(colId(ci)),
+          style: { accentColor: a, cursor: 'pointer', width: 13, height: 13 }
+        }))));
+    const tblCompact = (this.state.custom.layout ?? 'comfortable') === 'compact';
+    return React.createElement('table', { style: { borderCollapse: 'collapse', fontSize: Math.round(13.5 * (this.state.custom.fontSize ?? 1)), margin: tblCompact ? '2px 0' : '4px 0' } },
+      React.createElement('tbody', null, [colRow].concat(rows.map((r, ri) => {
+        const rid = b.id + 'r' + ri;
+        const cells = this.splitCells(r);
+        const isHead = ri === 0;
+        const rowDim = (!isHead && des[rid]) || dim;
+        return React.createElement('tr', { key: rid, style: { opacity: rowDim ? 0.35 : 1 } },
+          React.createElement('td', { style: { border: 'none', paddingRight: 6 } },
+            isHead ? null : React.createElement('input', {
+              type: 'checkbox', checked: !des[rid],
+              onChange: () => scope.toggleDes(rid),
+              style: { accentColor: a, cursor: 'pointer', width: 13, height: 13 }
+            })),
+          cells.map((c, ci) => React.createElement(isHead ? 'th' : 'td', {
+            key: ci,
+            style: { border: '1px solid var(--tborder)', padding: '5px 12px', textAlign: 'left', background: isHead ? 'var(--subtle)' : 'var(--surface)', fontWeight: isHead ? 700 : 400, opacity: des[colId(ci)] ? 0.35 : 1 }
+          }, this.renderInline(c, b.id, occCounter)))
+        );
+      })))
+    );
+  }
+
+  // ---------- copy ----------
+  buildSelectedMarkdown(parsed, keepOptions) {
+    const scope = this.mdScope();
+    const des = scope.des;
+    const out = [];
+    const subst = keepOptions ? ((text) => text) : ((text, blockId, counter) => text.replace(/\[([^\]]+)\]\(ph:([^)]+)\)/g, (mm, name, ch) => {
+      const occId = blockId + 'o' + (counter.n++);
+      return scope.sel[occId] ?? ch.split('|')[0];
+    }));
+    let numCtr = {};
+    let prevType = null;
+    const emit = (b, text) => {
+      if (prevType && !(prevType === 'li' && b.type === 'li')) out.push('');
+      out.push(text);
+      prevType = b.type;
+    };
+    for (const b of parsed.blocks) {
+      if (this.isDim(b, des)) continue;
+      const counter = { n: 0 };
+      if (b.type === 'table') {
+        const keepCol = (ci) => !des[b.id + 'c' + ci];
+        let kept = [], ri = 0;
+        for (const r of b.rows) {
+          if (/^\s*\|[\s\-:|]+\|\s*$/.test(r)) {
+            const segs = r.replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|');
+            kept.push('| ' + segs.filter((_, ci) => keepCol(ci)).map(x => x.trim()).join(' | ') + ' |');
+            continue;
+          }
+          const cells = this.splitCells(r).map(c => subst(c, b.id, counter));
+          if (ri === 0 || !des[b.id + 'r' + ri]) {
+            kept.push('| ' + cells.filter((_, ci) => keepCol(ci)).join(' | ') + ' |');
+          }
+          ri++;
+        }
+        numCtr = {};
+        emit(b, kept.join('\n'));
+      } else if (b.type === 'li') {
+        let raw = b.raw;
+        if (/^\d+\.$/.test(b.marker)) {
+          const lvl = b.liIndent;
+          numCtr[lvl] = (numCtr[lvl] || 0) + 1;
+          Object.keys(numCtr).forEach(k => { if (+k > lvl) delete numCtr[k]; });
+          raw = raw.replace(/^(\s*)\d+\./, '$1' + numCtr[lvl] + '.');
+        }
+        emit(b, subst(raw, b.id, counter));
+      } else if (b.type === 'code') {
+        numCtr = {};
+        emit(b, b.raw);
+      } else {
+        numCtr = {};
+        emit(b, subst(b.raw, b.id, counter));
+      }
+    }
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
+  }
+
+  // ---------- option group edits ----------
+  renameOption(name) {
+    const nn = window.prompt('Rename option "' + name + '" to:', name);
+    if (!nn || nn === name) return;
+    this.setState(s => ({ raw: s.raw.split('[' + name + '](ph:').join('[' + nn + '](ph:') }));
+  }
+  editOption(name, choices) {
+    const nv = window.prompt('Edit choices for "' + name + '" (separate with |):', choices.join('|'));
+    if (!nv) return;
+    const re = new RegExp('\\[' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\]\\(ph:[^)]+\\)', 'g');
+    this.setState(s => ({ raw: s.raw.replace(re, '[' + name + '](ph:' + nv + ')') }));
+  }
+  addOption() {
+    const name = window.prompt('New option name:', 'style');
+    if (!name) return;
+    const ch = window.prompt('Choices (separate with |):', 'option 1|option 2');
+    if (!ch) return;
+    this.setState(s => ({ raw: s.raw.trimEnd() + '\n\nUse [' + name + '](ph:' + ch + ') here.\n', mode: 'edit' }));
+  }
+
+  // ---------- AI ----------
+  aiGet(field) {
+    const p = this.state.aiCfg.provider;
+    const bp = this.state.aiCfg.byProvider[p] || {};
+    const def = PROVIDERS.find(x => x.id === p) || {};
+    if (field === 'model') return bp.model ?? def.model ?? '';
+    if (field === 'baseUrl') return bp.baseUrl ?? def.base ?? '';
+    if (field === 'temp') return bp.temp ?? 0.7;
+    if (field === 'maxTokens') return bp.maxTokens ?? 32000;
+    if (field === 'sendTemp') return bp.sendTemp ?? true;
+    if (field === 'sendMaxTok') return bp.sendMaxTok ?? true;
+    if (field === 'tokenParam') return bp.tokenParam ?? 'max_tokens';
+    return bp[field] ?? '';
+  }
+  aiSet(field, v) {
+    this.setState(s => {
+      const p = s.aiCfg.provider;
+      const bp = { ...(s.aiCfg.byProvider[p] || {}), [field]: v };
+      return { aiCfg: { ...s.aiCfg, byProvider: { ...s.aiCfg.byProvider, [p]: bp } } };
+    });
+  }
+  ensureKey() {
+    const prov = this.state.aiCfg.provider;
+    const key = this.aiGet('apiKey');
+    if (!key && prov !== 'local') {
+      this.setState({ aiOpen: true });
+      window.alert('Add your API key in AI Settings first.');
+      return false;
+    }
+    return true;
+  }
+
+  async callAI(sys, user) {
+    const prov = this.state.aiCfg.provider;
+    const key = this.aiGet('apiKey');
+    {
+      const model = this.aiGet('model');
+      const temp = +this.aiGet('temp');
+      const maxTok = +this.aiGet('maxTokens');
+      const base = String(this.aiGet('baseUrl')).replace(/\/$/, '');
+      const sendTemp = this.aiGet('sendTemp');
+      const sendMaxTok = this.aiGet('sendMaxTok');
+      let text;
+      if (prov === 'claude') {
+        // Anthropic always requires max_tokens and never gets temperature here.
+        const body = { model, max_tokens: maxTok > 0 ? maxTok : 32000, system: sys, messages: [{ role: 'user', content: user }] };
+        const r = await fetch(base + '/v1/messages', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+          body: JSON.stringify(body),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+        text = j.content.map(c => c.text || '').join('');
+      } else if (prov === 'gemini') {
+        const body = {
+          systemInstruction: { parts: [{ text: sys }] },
+          contents: [{ role: 'user', parts: [{ text: user }] }],
+          generationConfig: {},
+        };
+        if (sendTemp) body.generationConfig.temperature = temp;
+        if (sendMaxTok && maxTok > 0) body.generationConfig.maxOutputTokens = maxTok;
+        const r = await fetch(base + '/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify(body),
+        });
+        const j = await r.json();
+        if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+        const cand = j.candidates && j.candidates[0];
+        text = ((cand && cand.content && cand.content.parts) || []).map(p => p.text || '').join('');
+        if (!text) throw new Error('Empty response' + (cand && cand.finishReason ? ' (' + cand.finishReason + ')' : ''));
+      } else {
+        const call = async (tokParam) => {
+          const body = { model, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }] };
+          if (sendTemp) body.temperature = temp;
+          if (sendMaxTok) body[tokParam] = maxTok;
+          const def = PROVIDERS.find(x => x.id === prov) || {};
+          const r = await fetch(base + (def.chatPath || '/v1/chat/completions'), {
+            method: 'POST',
+            headers: { 'content-type': 'application/json', ...(key ? { authorization: 'Bearer ' + key } : {}) },
+            body: JSON.stringify(body),
+          });
+          const j = await r.json();
+          return { r, j };
+        };
+        let tokParam = this.aiGet('tokenParam');
+        let { r, j } = await call(tokParam);
+        if (!r.ok && sendMaxTok) {
+          const msg = (j.error && j.error.message) || '';
+          if (/max_completion_tokens|max_tokens/.test(msg)) {
+            const other = tokParam === 'max_tokens' ? 'max_completion_tokens' : 'max_tokens';
+            const retry = await call(other);
+            if (retry.r.ok) { this.aiSet('tokenParam', other); r = retry.r; j = retry.j; }
+          }
+        }
+        if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+        text = j.choices[0].message.content;
+      }
+      text = text.trim().replace(/^```(?:markdown|md)?\n/, '').replace(/\n```$/, '');
+      return text;
+    }
+  }
+
+  async detect() {
+    if (this.state.detecting) return;
+    if (!this.ensureKey()) return;
+    this.setState({ detecting: true, helpOpen: false });
+    try {
+      const text = await this.callAI(this.state.aiCfg.systemPrompt, this.state.raw);
+      this.setState({ raw: text, mode: 'view', detecting: false, noOptDismissed: false });
+    } catch (e) {
+      window.alert('Detect Options failed: ' + e.message);
+      this.setState({ detecting: false });
+    }
+  }
+
+  // ---------- Enrich tab ----------
+  setEnrich(patch) { this.setState(s => ({ enrich: { ...s.enrich, ...patch } })); }
+  enrichModePrompt() { const e = this.state.enrich; return e.modeOv[e.mode] ?? ENRICH_MODES[e.mode].prompt; }
+  enrichPersonaPrompt() { const e = this.state.enrich; return e.personaOv[e.persona] ?? this.libGet('personas')[e.persona] ?? ''; }
+  enrichStructPrompt() { const e = this.state.enrich; return e.structOv[e.structure] ?? this.libGet('structs')[e.structure] ?? ''; }
+
+  // ---------- persona / structure library management ----------
+  libGet(kind) { const l = this.state.lib || {}; return l[kind] || (kind === 'personas' ? ENRICH_PERSONAS : ENRICH_STRUCTURES); }
+  libCopy() { return { personas: { ...this.libGet('personas') }, structs: { ...this.libGet('structs') } }; }
+  libCur(kind, tab) {
+    const s = this.state;
+    return kind === 'personas' ? (tab === 'wiz' ? s.wiz.persona : s.enrich.persona) : (tab === 'wiz' ? s.wiz.structure : s.enrich.structure);
+  }
+  libAdd(kind) {
+    const label = kind === 'personas' ? 'persona' : 'structure';
+    const name = (window.prompt('Name for the new ' + label + ':') || '').trim();
+    if (!name) return;
+    if (this.libGet(kind)[name] !== undefined) { window.alert('A ' + label + ' named "' + name + '" already exists.'); return; }
+    this.setState(s => {
+      const lib = this.libCopy(); lib[kind][name] = '';
+      const en = { ...s.enrich }, wz = { ...s.wiz };
+      if (kind === 'personas') { en.persona = name; wz.persona = name; } else { en.structure = name; wz.structure = name; }
+      return { lib, enrich: en, wiz: wz };
+    });
+  }
+  libRename(kind, tab) {
+    const cur = this.libCur(kind, tab);
+    if (kind === 'personas' && cur === 'None') { window.alert('"None" cannot be renamed.'); return; }
+    const name = (window.prompt('Rename "' + cur + '" to:', cur) || '').trim();
+    if (!name || name === cur) return;
+    if (this.libGet(kind)[name] !== undefined) { window.alert('"' + name + '" already exists.'); return; }
+    this.setState(st => {
+      const lib = this.libCopy(); lib[kind][name] = lib[kind][cur]; delete lib[kind][cur];
+      const mv = (obj) => { if (obj[cur] === undefined) return obj; const o = { ...obj }; o[name] = o[cur]; delete o[cur]; return o; };
+      const en = { ...st.enrich }, wz = { ...st.wiz };
+      if (kind === 'personas') {
+        en.personaOv = mv(en.personaOv); wz.personaOv = mv(wz.personaOv);
+        if (en.persona === cur) en.persona = name;
+        if (wz.persona === cur) wz.persona = name;
+        const sp = { ...wz.secPersona }; Object.keys(sp).forEach(k => { if (sp[k] === cur) sp[k] = name; }); wz.secPersona = sp;
+      } else {
+        en.structOv = mv(en.structOv); wz.structOv = mv(wz.structOv);
+        if (en.structure === cur) en.structure = name;
+        if (wz.structure === cur) wz.structure = name;
+      }
+      return { lib, enrich: en, wiz: wz };
+    });
+  }
+  libDelete(kind, tab) {
+    const cur = this.libCur(kind, tab);
+    if (kind === 'personas' && cur === 'None') { window.alert('"None" cannot be deleted.'); return; }
+    if (kind === 'structs' && Object.keys(this.libGet('structs')).length <= 1) { window.alert('At least one structure must remain.'); return; }
+    if (!window.confirm('Delete "' + cur + '"? This cannot be undone.')) return;
+    this.setState(st => {
+      const lib = this.libCopy(); delete lib[kind][cur];
+      const drop = (obj) => { if (obj[cur] === undefined) return obj; const o = { ...obj }; delete o[cur]; return o; };
+      const en = { ...st.enrich }, wz = { ...st.wiz };
+      if (kind === 'personas') {
+        const fb = lib.personas['None'] !== undefined ? 'None' : Object.keys(lib.personas)[0];
+        en.personaOv = drop(en.personaOv); wz.personaOv = drop(wz.personaOv);
+        if (en.persona === cur) en.persona = fb;
+        if (wz.persona === cur) wz.persona = fb;
+        const sp = { ...wz.secPersona }; Object.keys(sp).forEach(k => { if (sp[k] === cur) sp[k] = fb; }); wz.secPersona = sp;
+      } else {
+        const fb = Object.keys(lib.structs)[0];
+        en.structOv = drop(en.structOv); wz.structOv = drop(wz.structOv);
+        if (en.structure === cur) en.structure = fb;
+        if (wz.structure === cur) wz.structure = fb;
+      }
+      return { lib, enrich: en, wiz: wz };
+    });
+  }
+  libSaveDefault(kind, tab) {
+    const cur = this.libCur(kind, tab);
+    this.setState(st => {
+      const en = { ...st.enrich }, wz = { ...st.wiz };
+      const ov = kind === 'personas' ? (tab === 'wiz' ? wz.personaOv : en.personaOv) : (tab === 'wiz' ? wz.structOv : en.structOv);
+      if (ov[cur] === undefined) return null;
+      const lib = this.libCopy(); lib[kind][cur] = ov[cur];
+      const o = { ...ov }; delete o[cur];
+      if (kind === 'personas') { if (tab === 'wiz') wz.personaOv = o; else en.personaOv = o; }
+      else { if (tab === 'wiz') wz.structOv = o; else en.structOv = o; }
+      return { lib, enrich: en, wiz: wz };
+    });
+  }
+
+  buildEnrichSystem() {
+    const persona = this.enrichPersonaPrompt().trim();
+    return [
+      this.state.enrich.system.trim(),
+      'STRUCTURE:\n' + this.enrichStructPrompt().trim(),
+      'PERSONA / PERSPECTIVE:\n' + (persona || 'No specific persona \u2014 use a neutral, knowledgeable perspective.'),
+      this.enrichModePrompt().trim(),
+    ].join('\n\n');
+  }
+
+  parseStructTree(text) {
+    const out = [];
+    for (const line of String(text).split('\n')) {
+      const m = line.match(/^\s*-\s+(.*)$/);
+      if (!m) continue;
+      let name = m[1].trim();
+      const ci = name.indexOf(':');
+      if (ci > 0 && ci <= 34) name = name.slice(0, ci).trim();
+      if (!name || name.length > 34) continue;
+      out.push(name);
+    }
+    return out;
+  }
+
+  async generateEnrich() {
+    const e = this.state.enrich;
+    if (e.generating) return;
+    if (!e.input.trim()) { window.alert('Type an input prompt first.'); return; }
+    if (!this.ensureKey()) return;
+    const sys = this.buildEnrichSystem();
+    console.log('[Enrich Prompt] SYSTEM PROMPT\n\n' + sys);
+    console.log('[Enrich Prompt] USER PROMPT\n\n' + e.input);
+    this.setEnrich({ generating: true });
+    try {
+      const text = await this.callAI(sys, e.input.trim());
+      this.stashCurrent();
+      this.setState(s => ({
+        raw: text, tab: 'viewer', mode: 'view', promptName: null,
+        deselected: {}, optionSel: {}, collapsed: {}, noOptDismissed: false,
+        enrich: { ...s.enrich, generating: false },
+      }));
+    } catch (err) {
+      window.alert('Generate failed: ' + err.message);
+      this.setEnrich({ generating: false });
+    }
+  }
+
+  // ---------- Prompt Wizard ----------
+  setWiz(patch) { this.setState(s => ({ wiz: { ...s.wiz, ...patch } })); }
+  // markdown scope: which deselected/optionSel maps the shared md renderers read & write
+  mdScope() {
+    return this._mdScope || {
+      des: this.state.deselected,
+      sel: this.state.optionSel,
+      toggleDes: (bid) => this.setState(st => ({ deselected: { ...st.deselected, [bid]: !st.deselected[bid] } })),
+      setSel: (occId, v) => this.setState(st => ({ optionSel: { ...st.optionSel, [occId]: v } })),
+    };
+  }
+  wizScope(pid) {
+    const w = this.state.wiz;
+    return {
+      des: w.secDes[pid] || {},
+      sel: w.secSel[pid] || {},
+      toggleDes: (bid) => this.setState(st => { const m = { ...(st.wiz.secDes[pid] || {}) }; m[bid] = !m[bid]; return { wiz: { ...st.wiz, secDes: { ...st.wiz.secDes, [pid]: m } } }; }),
+      setSel: (occId, v) => this.setState(st => ({ wiz: { ...st.wiz, secSel: { ...st.wiz.secSel, [pid]: { ...(st.wiz.secSel[pid] || {}), [occId]: v } } } })),
+    };
+  }
+  wizLiteBlocks(pid) {
+    const scope = this.wizScope(pid);
+    this._mdScope = scope;
+    const rows = [];
+    try {
+      const parsed = this.parse(this.state.wiz.content[pid] || '');
+      const des = scope.des;
+      const scale = this.state.custom.fontSize ?? 1;
+      for (const b of parsed.blocks) {
+        const dim = this.isDim(b, des);
+        const occCounter = { n: 0 };
+        const row = {
+          opacity: dim ? 0.35 : 1, checked: !des[b.id],
+          onToggle: () => scope.toggleDes(b.id),
+          pad: '2px 0', checkTop: '4px', hasCheck: true,
+        };
+        if (b.type === 'h') {
+          const sizes = { 1: 22, 2: 18, 3: 15.5, 4: 14, 5: 13, 6: 12.5 };
+          const fz = Math.round((sizes[b.level] || 13) * scale);
+          row.pad = (b.level === 1 ? '8px' : '10px') + ' 0 2px';
+          row.checkTop = Math.max(2, Math.round((fz * 1.3 - 14) / 2)) + 'px';
+          row.el = React.createElement('div', { style: { fontSize: fz, fontWeight: 700, lineHeight: 1.3 } }, this.renderInline(b.text, b.id, occCounter));
+        } else if (b.type === 'li') {
+          row.el = React.createElement('div', { style: { fontSize: Math.round(13.5 * scale), lineHeight: 1.6, display: 'flex', gap: 8, paddingLeft: b.liIndent * 8 } },
+            React.createElement('span', { style: { color: 'var(--muted3)', flex: 'none', minWidth: 12 } }, b.marker),
+            React.createElement('span', null, this.renderInline(b.text, b.id, occCounter)));
+        } else if (b.type === 'table') {
+          row.el = this.makeTable(b, dim);
+          row.pad = '5px 0'; row.checkTop = '9px';
+        } else if (b.type === 'code') {
+          row.el = React.createElement('pre', { style: { margin: 0, background: 'var(--code)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: Math.round(12 * scale), lineHeight: 1.6, fontFamily: 'ui-monospace,Menlo,Consolas,monospace', overflowX: 'auto', whiteSpace: 'pre' } }, b.body.join('\n'));
+          row.pad = '5px 0'; row.checkTop = '11px';
+        } else if (b.type === 'quote') {
+          row.el = React.createElement('div', { style: { borderLeft: '3px solid var(--qborder)', paddingLeft: 12, color: 'var(--qtext)', fontStyle: 'italic', fontSize: Math.round(13.5 * scale), lineHeight: 1.6 } },
+            b.qlines.map((q, qi) => React.createElement('div', { key: qi }, this.renderInline(q, b.id, occCounter))));
+        } else if (b.type === 'hr') {
+          row.el = React.createElement('div', { style: { borderTop: '1px solid var(--border3)' } });
+          row.pad = '10px 0'; row.hasCheck = false;
+        } else {
+          row.el = React.createElement('div', { style: { fontSize: Math.round(13.5 * scale), lineHeight: 1.6 } }, this.renderInline(b.text, b.id, occCounter));
+        }
+        rows.push(row);
+      }
+    } finally { this._mdScope = null; }
+    return rows;
+  }
+  wizPersonaPromptFor(name) { return this.state.wiz.personaOv[name] ?? this.libGet('personas')[name] ?? ''; }
+  wizStructPromptV() { const w = this.state.wiz; return w.structOv[w.structure] ?? this.libGet('structs')[w.structure] ?? ''; }
+  wizNewId() { return 'w' + Math.random().toString(36).slice(2, 9); }
+
+  wizItemsToRaw(items) {
+    const out = [];
+    for (const it of items) {
+      out.push('## ' + it.title);
+      if (it.desc) out.push(it.desc);
+      for (const c of it.children) { out.push('### ' + c.title); if (c.desc) out.push(c.desc); }
+    }
+    return out.join('\n') + (items.length ? '\n' : '');
+  }
+  wizParseRaw(text, prev) {
+    const prevTop = {}, prevSub = {};
+    for (const it of (prev || [])) { if (!prevTop[it.title]) prevTop[it.title] = it; for (const c of it.children) { if (!prevSub[c.title]) prevSub[c.title] = c; } }
+    const items = [];
+    let last = null;
+    for (const line of String(text).split('\n')) {
+      const m = line.match(/^\s*(#{2,3})\s+(.+?)\s*$/);
+      if (!m) {
+        const t = line.replace(/^\s*[-*]\s+/, '').trim();
+        if (t && last && !/^#/.test(t)) last.desc = last.desc ? last.desc + ' ' + t : t;
+        continue;
+      }
+      const title = m[2].replace(/[#*`]+\s*$/, '').trim();
+      if (!title) continue;
+      if (m[1] === '##') {
+        const p = prevTop[title]; if (p) delete prevTop[title];
+        last = { id: p ? p.id : this.wizNewId(), title, on: p ? p.on : true, desc: '', children: [] };
+        items.push(last);
+      } else {
+        if (!items.length) continue;
+        const p = prevSub[title]; if (p) delete prevSub[title];
+        last = { id: p ? p.id : this.wizNewId(), title, on: p ? p.on : true, desc: '' };
+        items[items.length - 1].children.push(last);
+      }
+    }
+    return items;
+  }
+
+  wizSetItems(fn) { this.setState(s => ({ wiz: { ...s.wiz, items: fn(s.wiz.items) } })); }
+  wizPatchItem(id, patch) { this.wizSetItems(items => items.map(it => it.id === id ? { ...it, ...patch } : it)); }
+  wizPatchChild(pid, cid, patch) { this.wizSetItems(items => items.map(it => it.id !== pid ? it : { ...it, children: it.children.map(c => c.id === cid ? { ...c, ...patch } : c) })); }
+  wizMove(id, d) {
+    this.wizSetItems(items => {
+      const i = items.findIndex(x => x.id === id), j = i + d;
+      if (i < 0 || j < 0 || j >= items.length) return items;
+      const n = items.slice(); const t = n[i]; n[i] = n[j]; n[j] = t; return n;
+    });
+  }
+  wizMoveChild(pid, cid, d) {
+    this.wizSetItems(items => items.map(it => {
+      if (it.id !== pid) return it;
+      const i = it.children.findIndex(x => x.id === cid), j = i + d;
+      if (i < 0 || j < 0 || j >= it.children.length) return it;
+      const n = it.children.slice(); const t = n[i]; n[i] = n[j]; n[j] = t;
+      return { ...it, children: n };
+    }));
+  }
+  wizRename(id) {
+    let title = '';
+    for (const it of this.state.wiz.items) { if (it.id === id) title = it.title; for (const c of it.children) if (c.id === id) title = c.title; }
+    const nn = window.prompt('Rename section to:', title);
+    if (!nn || !nn.trim() || nn.trim() === title) return;
+    const t = nn.trim();
+    this.wizSetItems(items => items.map(it => ({
+      ...(it.id === id ? { ...it, title: t } : it),
+      children: it.children.map(c => c.id === id ? { ...c, title: t } : c),
+    })));
+  }
+
+  wizBuildStructSystem() {
+    const w = this.state.wiz;
+    const persona = this.wizPersonaPromptFor(w.persona).trim();
+    return [
+      w.structSys.trim(),
+      'STRUCTURE:\n' + this.wizStructPromptV().trim(),
+      'PERSONA / PERSPECTIVE:\n' + (persona || 'No specific persona \u2014 use a neutral, knowledgeable perspective.'),
+    ].join('\n\n');
+  }
+
+  async wizGenStructure() {
+    const w = this.state.wiz;
+    if (w.busy) return;
+    if (!w.input.trim()) { window.alert('Describe your idea in the Initial Input first.'); return; }
+    if (!this.ensureKey()) return;
+    const hasContent = w.items.some(i => (w.content[i.id] || '').trim() || i.children.some(c => (w.content[c.id] || '').trim()));
+    if (hasContent && !window.confirm('Regenerating the structure discards all generated section content. Continue?')) return;
+    const sys = this.wizBuildStructSystem();
+    console.log('[Prompt Wizard \u00b7 Structure] SYSTEM PROMPT\n\n' + sys);
+    console.log('[Prompt Wizard \u00b7 Structure] USER PROMPT\n\n' + w.input.trim());
+    this.setWiz({ busy: true });
+    try {
+      const text = await this.callAI(sys, w.input.trim());
+      const items = this.wizParseRaw(text, []);
+      if (!items.length) throw new Error('the model returned no "## Section" headings.');
+      this.setWiz({ busy: false, items, rawDraft: null, view: 'tree', content: {}, secPersona: {}, secExtra: {}, secLen: {}, secFeedback: {}, secDes: {}, secSel: {}, secView: {}, step: 'structure' });
+    } catch (e) {
+      window.alert('Generate structure failed: ' + e.message);
+      this.setWiz({ busy: false });
+    }
+  }
+
+  async wizGenSection() {
+    const w = this.state.wiz;
+    const it = w.items.find(i => i.id === w.step);
+    if (!it || w.busy) return;
+    if (!this.ensureKey()) return;
+    const personaName = w.secPersona[it.id] || w.persona;
+    const persona = this.wizPersonaPromptFor(personaName).trim();
+    const sys = [
+      w.contentSys.trim(),
+      'PERSONA / PERSPECTIVE:\n' + (persona || 'No specific persona \u2014 use a neutral, knowledgeable perspective.'),
+    ].join('\n\n');
+    const secLine = (x) => '## ' + x.title + (x.desc ? '\n(' + x.desc + ')' : '') + x.children.filter(c => c.on).map(c => '\n### ' + c.title + (c.desc ? ' \u2014 ' + c.desc : '')).join('');
+    const outline = w.items.filter(i => i.on).map(secLine).join('\n');
+    const len = w.secLen[it.id] || 'Standard';
+    let user = 'ORIGINAL INPUT / IDEA:\n' + w.input.trim()
+      + '\n\nFULL PROMPT OUTLINE (context only \u2014 do not write other sections):\n' + outline
+      + '\n\nWRITE ONLY THIS SECTION:\n' + secLine(it)
+      + '\n\nLENGTH / DEPTH: ' + (WIZ_LENGTHS[len] || len);
+    const extra = (w.secExtra[it.id] || '').trim();
+    if (extra) user += '\n\nEXTRA INSTRUCTIONS / CONTEXT:\n' + extra;
+    const fb = (w.secFeedback[it.id] || '').trim();
+    if (w.content[it.id] && fb) user += '\n\nPREVIOUS VERSION OF THIS SECTION:\n' + w.content[it.id] + '\n\nFEEDBACK \u2014 REVISE THE SECTION ACCORDINGLY:\n' + fb;
+    console.log('[Prompt Wizard \u00b7 ' + it.title + '] SYSTEM PROMPT\n\n' + sys);
+    console.log('[Prompt Wizard \u00b7 ' + it.title + '] USER PROMPT\n\n' + user);
+    this.setWiz({ busy: true });
+    try {
+      const text = await this.callAI(sys, user);
+      this.setState(st => ({ wiz: { ...st.wiz, busy: false, content: { ...st.wiz.content, [it.id]: text }, secFeedback: { ...st.wiz.secFeedback, [it.id]: '' }, secDes: { ...st.wiz.secDes, [it.id]: {} }, secSel: { ...st.wiz.secSel, [it.id]: {} }, secView: { ...st.wiz.secView, [it.id]: 'view' } } }));
+    } catch (e) {
+      window.alert('Generate section failed: ' + e.message);
+      this.setWiz({ busy: false });
+    }
+  }
+
+  wizAssemble() {
+    const w = this.state.wiz;
+    const parts = [];
+    for (const it of w.items) {
+      if (!it.on) continue;
+      if (!w.content[it.id]) { parts.push('## ' + it.title + '\n\n*(not generated yet)*'); continue; }
+      this._mdScope = this.wizScope(it.id);
+      let md = '';
+      try { md = this.buildSelectedMarkdown(this.parse(w.content[it.id]), true).trim(); }
+      finally { this._mdScope = null; }
+      if (md) parts.push(md);
+    }
+    return parts.join('\n\n');
+  }
+  wizOpenInViewer() {
+    const md = this.wizAssemble();
+    if (!md.trim()) return;
+    this.stashCurrent();
+    this.setState(s => ({
+      raw: md.trim() + '\n', tab: 'viewer', mode: 'view', promptName: null,
+      deselected: {}, optionSel: {}, collapsed: {}, noOptDismissed: false,
+    }));
+  }
+
+  wizVals() {
+    const s = this.state, w = s.wiz, a = this.accent();
+    const secs = w.items.filter(i => i.on);
+    const hasItems = w.items.length > 0;
+    const stepKeys = ['structure'].concat(secs.map(i => i.id)).concat(hasItems ? ['review'] : []);
+    const step = stepKeys.includes(w.step) ? w.step : 'structure';
+    const stepIdx = stepKeys.indexOf(step);
+    const cur = w.items.find(i => i.id === step) || null;
+    const allDone = secs.length > 0 && secs.every(x => !!w.content[x.id]);
+
+    const wizSteps = stepKeys.map((k, i) => {
+      const it = w.items.find(x => x.id === k);
+      const done = k === 'structure' ? hasItems : (it ? !!w.content[k] : allDone);
+      const on = k === step;
+      return {
+        num: done && !on ? '\u2713' : String(i + 1),
+        label: k === 'structure' ? 'Structure' : (k === 'review' ? 'Review' : it.title),
+        notFirst: i > 0,
+        border: on ? a : 'var(--border)', bg: on ? a + '14' : 'var(--surface)',
+        color: on || done ? 'var(--text)' : 'var(--muted2)',
+        numBg: on || done ? a : 'var(--seg)', numColor: on || done ? '#fff' : 'var(--muted2)',
+        onGo: () => this.setWiz({ step: k }),
+      };
+    });
+
+    const wizTree = [];
+    w.items.forEach((it, i) => {
+      wizTree.push({
+        title: it.title, desc: it.desc || '', hasDesc: !!it.desc, indent: '0px', weight: 700, checked: it.on, opacity: it.on ? 1 : 0.42,
+        onToggle: () => this.wizPatchItem(it.id, { on: !it.on }),
+        onRename: () => this.wizRename(it.id),
+        onUp: () => this.wizMove(it.id, -1), onDown: () => this.wizMove(it.id, 1),
+        upDis: i === 0, downDis: i === w.items.length - 1,
+        upColor: i === 0 ? 'var(--border3)' : 'var(--muted2)', downColor: i === w.items.length - 1 ? 'var(--border3)' : 'var(--muted2)',
+      });
+      it.children.forEach((c, j) => {
+        wizTree.push({
+          title: c.title, desc: c.desc || '', hasDesc: !!c.desc, indent: '26px', weight: 400, checked: c.on, opacity: (it.on && c.on) ? 1 : 0.42,
+          onToggle: () => this.wizPatchChild(it.id, c.id, { on: !c.on }),
+          onRename: () => this.wizRename(c.id),
+          onUp: () => this.wizMoveChild(it.id, c.id, -1), onDown: () => this.wizMoveChild(it.id, c.id, 1),
+          upDis: j === 0, downDis: j === it.children.length - 1,
+          upColor: j === 0 ? 'var(--border3)' : 'var(--muted2)', downColor: j === it.children.length - 1 ? 'var(--border3)' : 'var(--muted2)',
+        });
+      });
+    });
+
+    const nextKey = stepKeys[Math.min(stepIdx + 1, stepKeys.length - 1)];
+    const nextLabel = nextKey === 'review' ? 'Review' : (w.items.find(x => x.id === nextKey) || {}).title || '';
+    const missing = secs.filter(i => !w.content[i.id]);
+
+    const vals = {
+      wizOnStructure: step === 'structure', wizOnSection: !!cur, wizOnReview: step === 'review',
+      wizSteps, wizBusy: !!w.busy, wizHasItems: hasItems,
+      wizInput: w.input, setWizInput: (e) => this.setWiz({ input: e.target.value }),
+      wizPersona: w.persona, wizPersonaNames: Object.keys(this.libGet('personas')),
+      wizAddPersona: () => this.libAdd('personas'),
+      wizRenamePersona: () => this.libRename('personas', 'wiz'),
+      wizDeletePersona: () => this.libDelete('personas', 'wiz'),
+      wizSavePersona: () => this.libSaveDefault('personas', 'wiz'),
+      wizAddStruct: () => this.libAdd('structs'),
+      wizRenameStruct: () => this.libRename('structs', 'wiz'),
+      wizDeleteStruct: () => this.libDelete('structs', 'wiz'),
+      wizSaveStruct: () => this.libSaveDefault('structs', 'wiz'),
+      setWizPersona: (e) => this.setWiz({ persona: e.target.value }),
+      wizPersonaPromptV: this.wizPersonaPromptFor(w.persona),
+      setWizPersonaPrompt: (e) => this.setState(st => ({ wiz: { ...st.wiz, personaOv: { ...st.wiz.personaOv, [st.wiz.persona]: e.target.value } } })),
+      wizPersonaCustom: w.personaOv[w.persona] !== undefined && w.personaOv[w.persona] !== (this.libGet('personas')[w.persona] ?? ''),
+      resetWizPersona: () => this.setState(st => { const o = { ...st.wiz.personaOv }; delete o[st.wiz.persona]; return { wiz: { ...st.wiz, personaOv: o } }; }),
+      wizStructName: w.structure, wizStructNames: Object.keys(this.libGet('structs')),
+      setWizStructSel: (e) => this.setWiz({ structure: e.target.value }),
+      wizStructPromptV: this.wizStructPromptV(),
+      setWizStructPrompt: (e) => this.setState(st => ({ wiz: { ...st.wiz, structOv: { ...st.wiz.structOv, [st.wiz.structure]: e.target.value } } })),
+      wizStructCustom: w.structOv[w.structure] !== undefined && w.structOv[w.structure] !== (this.libGet('structs')[w.structure] ?? ''),
+      resetWizStruct: () => this.setState(st => { const o = { ...st.wiz.structOv }; delete o[st.wiz.structure]; return { wiz: { ...st.wiz, structOv: o } }; }),
+      wizStructSysOpen: !!w.structSysOpen,
+      toggleWizStructSys: () => this.setWiz({ structSysOpen: !w.structSysOpen }),
+      wizStructSysChev: w.structSysOpen ? '\u25be' : '\u25b8',
+      wizStructSysV: w.structSys, setWizStructSysV: (e) => this.setWiz({ structSys: e.target.value }),
+      resetWizStructSys: () => this.setWiz({ structSys: WIZ_STRUCT_SYS }),
+      wizNoItems: !hasItems, wizShowTree: hasItems && w.view !== 'raw', wizShowRaw: hasItems && w.view === 'raw',
+      wizViewTree: () => this.setWiz({ view: 'tree', rawDraft: null }),
+      wizViewRaw: () => this.setWiz({ view: 'raw', rawDraft: null }),
+      wizTreeBg: w.view !== 'raw' ? 'var(--seg-active)' : 'transparent', wizTreeColor: w.view !== 'raw' ? 'var(--text)' : 'var(--muted2)', wizTreeShadow: w.view !== 'raw' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+      wizRawBg: w.view === 'raw' ? 'var(--seg-active)' : 'transparent', wizRawColor: w.view === 'raw' ? 'var(--text)' : 'var(--muted2)', wizRawShadow: w.view === 'raw' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+      wizTree,
+      wizRaw: w.rawDraft != null ? w.rawDraft : this.wizItemsToRaw(w.items),
+      setWizRaw: (e) => { const text = e.target.value; this.setState(st => ({ wiz: { ...st.wiz, rawDraft: text, items: this.wizParseRaw(text, st.wiz.items) } })); },
+      wizGenStructure: () => this.wizGenStructure(),
+      wizGenStructLabel: w.busy ? '\u23f3 Generating\u2026' : (hasItems ? '\u21bb Regenerate Structure' : '\u2726 Generate Structure'),
+      wizNext: () => this.setWiz({ step: stepKeys[Math.min(stepIdx + 1, stepKeys.length - 1)] }),
+      wizBack: () => this.setWiz({ step: stepKeys[Math.max(stepIdx - 1, 0)] }),
+      wizNextBtnLabel: 'Next: ' + nextLabel + ' \u2192',
+      wizGenSection: () => this.wizGenSection(),
+      wizAssembled: this.wizAssemble(),
+      wizMissingNote: missing.length ? missing.length + ' of ' + secs.length + ' sections not generated yet' : 'All ' + secs.length + ' sections generated',
+      wizMissingColor: missing.length ? '#b4552d' : 'var(--muted3)',
+      wizCopyLabel: w.copied ? '\u2713 Copied' : '\u29c9 Copy',
+      wizCopy: () => {
+        navigator.clipboard.writeText(this.wizAssemble().trim() + '\n').catch(() => {});
+        this.setWiz({ copied: true });
+        clearTimeout(this._wct);
+        this._wct = setTimeout(() => this.setWiz({ copied: false }), 1500);
+      },
+      wizOpenViewer: () => this.wizOpenInViewer(),
+      wizFootNote: step === 'structure'
+        ? 'Step system prompt + Structure + Persona \u2192 suggested sections \u00b7 full prompt is logged to the console'
+        : (step === 'review'
+          ? 'Assembled from the generated sections, in structure order.'
+          : 'Step system prompt + Persona + section brief \u00b7 full prompt is logged to the console'),
+    };
+
+    if (cur) {
+      const pid = cur.id;
+      const personaName = w.secPersona[pid] || w.persona;
+      const len = w.secLen[pid] || 'Standard';
+      const content = w.content[pid] || '';
+      const secView = w.secView[pid] || 'view';
+      Object.assign(vals, {
+        wizSecTitle: cur.title,
+        wizSecDesc: cur.desc || '', wizSecHasDesc: !!cur.desc,
+        wizSecSubs: cur.children.filter(c => c.on).map(c => ({ t: c.title, d: c.desc || '' })),
+        wizSecHasSubs: cur.children.filter(c => c.on).length > 0,
+        wizSecPersona: personaName,
+        setWizSecPersona: (e) => this.setState(st => ({ wiz: { ...st.wiz, secPersona: { ...st.wiz.secPersona, [pid]: e.target.value } } })),
+        wizSecPersonaPromptV: this.wizPersonaPromptFor(personaName),
+        setWizSecPersonaPromptV: (e) => this.setState(st => ({ wiz: { ...st.wiz, personaOv: { ...st.wiz.personaOv, [personaName]: e.target.value } } })),
+        wizLenChoices: ['Concise', 'Standard', 'Detailed'].map(v => {
+          const on = len === v;
+          return { label: v, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ wiz: { ...st.wiz, secLen: { ...st.wiz.secLen, [pid]: v } } })) };
+        }),
+        wizSecExtra: w.secExtra[pid] || '',
+        setWizSecExtra: (e) => this.setState(st => ({ wiz: { ...st.wiz, secExtra: { ...st.wiz.secExtra, [pid]: e.target.value } } })),
+        wizSecContent: content,
+        setWizSecContent: (e) => this.setState(st => ({ wiz: { ...st.wiz, content: { ...st.wiz.content, [pid]: e.target.value } } })),
+        wizSecHasContent: !!content, wizSecNoContent: !content,
+        wizSecShowEdit: !!content && secView === 'edit',
+        wizSecShowView: !!content && secView === 'view',
+        wizSecViewEdit: () => this.setState(st => ({ wiz: { ...st.wiz, secView: { ...st.wiz.secView, [pid]: 'edit' } } })),
+        wizSecViewView: () => this.setState(st => ({ wiz: { ...st.wiz, secView: { ...st.wiz.secView, [pid]: 'view' } } })),
+        wizSecEditBg: secView === 'edit' ? 'var(--seg-active)' : 'transparent', wizSecEditColor: secView === 'edit' ? 'var(--text)' : 'var(--muted2)', wizSecEditShadow: secView === 'edit' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+        wizSecViewBg: secView === 'view' ? 'var(--seg-active)' : 'transparent', wizSecViewColor: secView === 'view' ? 'var(--text)' : 'var(--muted2)', wizSecViewShadow: secView === 'view' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+        wizSecBlocks: content && secView === 'view' ? this.wizLiteBlocks(pid) : [],
+        wizSecCopyLabel: w.copied ? '\u2713 Copied' : '\u29c9 Copy Selected',
+        wizSecCopy: () => {
+          this._mdScope = this.wizScope(pid);
+          let md = '';
+          try { md = this.buildSelectedMarkdown(this.parse(this.state.wiz.content[pid] || '')); }
+          finally { this._mdScope = null; }
+          navigator.clipboard.writeText(md).catch(() => {});
+          this.setWiz({ copied: true });
+          clearTimeout(this._wct);
+          this._wct = setTimeout(() => this.setWiz({ copied: false }), 1500);
+        },
+        wizSecStatus: content ? (secView === 'view' ? 'Unchecked blocks won\u2019t go into the final prompt' : 'Editable \u2014 manual edits are kept') : 'Not generated yet',
+        wizSecFeedback: w.secFeedback[pid] || '',
+        setWizSecFeedback: (e) => this.setState(st => ({ wiz: { ...st.wiz, secFeedback: { ...st.wiz.secFeedback, [pid]: e.target.value } } })),
+        wizGenSecLabel: w.busy ? '\u23f3 Generating\u2026' : (content ? ((w.secFeedback[pid] || '').trim() ? '\u21bb Regenerate with feedback' : '\u21bb Regenerate') : '\u2726 Generate Section'),
+        wizContentSysOpen: !!w.contentSysOpen,
+        toggleWizContentSys: () => this.setWiz({ contentSysOpen: !w.contentSysOpen }),
+        wizContentSysChev: w.contentSysOpen ? '\u25be' : '\u25b8',
+        wizContentSysV: w.contentSys, setWizContentSysV: (e) => this.setWiz({ contentSys: e.target.value }),
+        resetWizContentSys: () => this.setWiz({ contentSys: WIZ_CONTENT_SYS }),
+      });
+    }
+    return vals;
+  }
+
+  // ---------- prompt library ----------
+  loadPromptStore() {
+    try { return JSON.parse(localStorage.getItem('mps-prompts') || '{}'); } catch (e) { return {}; }
+  }
+  savePromptStore(p) {
+    try { localStorage.setItem('mps-prompts', JSON.stringify(p)); } catch (e) {}
+  }
+  savePrompt() {
+    const name = window.prompt('Save prompt as:', this.state.promptName || 'Untitled');
+    if (!name) return;
+    const p = this.loadPromptStore();
+    p[name] = this.state.raw;
+    this.savePromptStore(p);
+    this.setState({ promptName: name });
+  }
+  // auto-stash the current doc before anything replaces it, so nothing is ever lost
+  stashCurrent() {
+    const raw = this.state.raw;
+    if (!raw || !raw.trim() || raw === SAMPLE) return;
+    const p = this.loadPromptStore();
+    if (Object.values(p).includes(raw)) return; // already saved verbatim
+    p[this.state.promptName || 'Backup (unsaved)'] = raw;
+    this.savePromptStore(p);
+  }
+  openPromptByName(name) {
+    this.stashCurrent();
+    if (name === '__sample') {
+      this.setState({ raw: SAMPLE, promptName: null, deselected: {}, optionSel: {}, collapsed: {}, noOptDismissed: false });
+      return;
+    }
+    const p = this.loadPromptStore();
+    if (p[name] === undefined) return;
+    this.setState({ raw: p[name], promptName: name, deselected: {}, optionSel: {}, collapsed: {}, noOptDismissed: false });
+  }
+  deletePrompt() {
+    const name = this.state.promptName;
+    if (!name) return;
+    if (!window.confirm('Delete saved prompt "' + name + '"?')) return;
+    const p = this.loadPromptStore();
+    delete p[name];
+    this.savePromptStore(p);
+    this.setState({ promptName: null });
+  }
+  importFile() {
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = '.md,.markdown,.txt,text/markdown,text/plain';
+    inp.onchange = () => {
+      const f = inp.files && inp.files[0];
+      if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => { this.stashCurrent(); this.setState({ raw: String(rd.result), promptName: f.name.replace(/\.(md|markdown|txt)$/i, ''), deselected: {}, optionSel: {}, collapsed: {}, noOptDismissed: false }); };
+      rd.readAsText(f);
+    };
+    inp.click();
+  }
+  exportFile() {
+    const blob = new Blob([this.state.raw], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (this.state.promptName || 'prompt') + '.md';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+
+  goToBlock(id) {
+    const el = this._scroll && this._scroll.querySelector('[data-hid="' + id + '"]');
+    if (el && this._scroll) this._scroll.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
+  }
+
+  // ---------- render ----------
+  renderVals() {
+    const s = this.state;
+    const a = this.accent();
+    const parsed = this.parse(s.raw);
+    const des = s.deselected;
+    const scale = s.custom.fontSize ?? 1;
+    const compact = (s.custom.layout ?? 'comfortable') === 'compact';
+
+    // current section + ancestors
+    const curSet = {};
+    if (s.currentHid) {
+      curSet[s.currentHid] = true;
+      const cb = parsed.blocks.find(b => b.id === s.currentHid);
+      if (cb) cb.ancestors.forEach(x => curSet[x] = true);
+    }
+
+    // ordered-list renumbering (mirrors copy output)
+    const markerOverride = {};
+    {
+      let numCtr = {};
+      for (const b of parsed.blocks) {
+        const bd = this.isDim(b, des);
+        if (b.type !== 'li') { if (!bd) numCtr = {}; continue; }
+        if (!/^\d+\.$/.test(b.marker) || bd) continue;
+        const lvl = b.liIndent;
+        numCtr[lvl] = (numCtr[lvl] || 0) + 1;
+        Object.keys(numCtr).forEach(k => { if (+k > lvl) delete numCtr[k]; });
+        markerOverride[b.id] = numCtr[lvl] + '.';
+      }
+    }
+
+    // visible blocks (collapse filtering)
+    const hiddenByCollapse = (b) => (b.ancestors || []).some(x => s.collapsed[x]);
+    const blocks = [];
+    for (const b of parsed.blocks) {
+      if (hiddenByCollapse(b)) continue;
+      const dim = this.isDim(b, des);
+      const occCounter = { n: 0 };
+      const common = {
+        hid: b.id,
+        opacity: dim ? 0.35 : 1,
+        checked: !des[b.id],
+        onToggle: () => this.setState(st => ({ deselected: { ...st.deselected, [b.id]: !st.deselected[b.id] } })),
+        indent: '0px', pad: '3px 0',
+        line: b.srcLine, numTop: '3px',
+        railColor: (s.currentHid && (b.id === s.currentHid || (b.ancestors || []).includes(s.currentHid))) ? a : 'var(--rail)',
+        hasCheck: false, hasCollapse: false, chev: '▾', chevTop: '6px', checkTop: '5px',
+      };
+      if (b.type === 'h') {
+        const sizes = { 1: 27, 2: 21, 3: 17, 4: 15, 5: 14, 6: 13 };
+        const fz = Math.round((sizes[b.level] || 14) * scale);
+        const isCur = curSet[b.id];
+        blocks.push({
+          ...common, hasCheck: b.level <= 3, hasCollapse: true,
+          chev: s.collapsed[b.id] ? '▸' : '▾',
+          chevTop: Math.round((fz * 1.3 - 13) / 2) + 'px', checkTop: Math.round((fz * 1.3 - 14) / 2) + 'px',
+          pad: (compact ? (b.level === 1 ? '5px' : '8px') : (b.level === 1 ? '10px' : '14px')) + ' 0 2px',
+          onCollapse: () => this.setState(st => ({ collapsed: { ...st.collapsed, [b.id]: !st.collapsed[b.id] } })),
+          numTop: Math.round((fz * 1.3 - 11) / 2) + 'px',
+          el: React.createElement('div', { style: { fontSize: fz, fontWeight: 700, lineHeight: 1.3, letterSpacing: b.level === 1 ? '-0.015em' : '0' } }, this.renderInline(b.text, b.id, occCounter)),
+        });
+      } else if (b.type === 'li') {
+        blocks.push({
+          ...common, hasCheck: true, indent: (b.liIndent * 10) + 'px',
+          checkTop: Math.round((15 * scale * (compact ? 1.45 : 1.65) - 14) / 2) + 'px',
+          numTop: Math.round((15 * scale * (compact ? 1.45 : 1.65) - 11) / 2) + 'px',
+          pad: compact ? '0px 0' : '2px 0',
+          el: React.createElement('div', { style: { fontSize: Math.round(15 * scale), lineHeight: compact ? 1.45 : 1.65, display: 'flex', gap: 8 } },
+            React.createElement('span', { style: { color: 'var(--muted3)', flex: 'none', minWidth: 12 } }, markerOverride[b.id] ?? b.marker),
+            React.createElement('span', null, this.renderInline(b.text, b.id, occCounter))),
+        });
+      } else if (b.type === 'table') {
+        blocks.push({ ...common, hasCheck: true, checkTop: '10px', pad: '6px 0', el: this.makeTable(b, dim) });
+      } else if (b.type === 'code') {
+        blocks.push({
+          ...common, hasCheck: true, checkTop: '13px', numTop: '13px', pad: '6px 0',
+          el: React.createElement('pre', { style: { margin: 0, background: 'var(--code)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px', fontSize: Math.round(12.5 * scale), lineHeight: 1.6, fontFamily: 'ui-monospace,Menlo,Consolas,monospace', overflowX: 'auto', whiteSpace: 'pre' } }, b.body.join('\n')),
+        });
+      } else if (b.type === 'quote') {
+        blocks.push({
+          ...common, hasCheck: true, pad: '5px 0',
+          checkTop: Math.round((15.5 * scale * (compact ? 1.5 : 1.7) - 14) / 2) + 'px',
+          el: React.createElement('div', { style: { borderLeft: '3px solid var(--qborder)', paddingLeft: 14, color: 'var(--qtext)', fontStyle: 'italic', fontSize: Math.round(15.5 * scale), lineHeight: compact ? 1.5 : 1.7 } },
+            b.qlines.map((q, qi) => React.createElement('div', { key: qi }, this.renderInline(q, b.id, occCounter)))),
+        });
+      } else if (b.type === 'hr') {
+        blocks.push({
+          ...common, pad: '12px 0',
+          el: React.createElement('div', { style: { borderTop: '1px solid var(--border3)' } }),
+        });
+      } else {
+        blocks.push({
+          ...common, pad: compact ? '2px 0' : '4px 0',
+          el: React.createElement('div', { style: { fontSize: Math.round(15.5 * scale), lineHeight: compact ? 1.5 : 1.7 } }, this.renderInline(b.text, b.id, occCounter)),
+        });
+      }
+    }
+
+    // outline
+    const outline = parsed.blocks.filter(b => b.type === 'h' && b.level <= 3).map(h => {
+      const hasKids = parsed.blocks.some(b => b.type === 'h' && b.level <= 3 && b.ancestors.includes(h.id));
+      const hidden = (h.ancestors || []).some(x => s.collapsed[x]);
+      return hidden ? null : {
+        text: h.text.replace(/\[([^\]]+)\]\(ph:[^)]+\)/g, '$1'),
+        pad: (6 + (h.level - 1) * 14) + 'px',
+        weight: curSet[h.id] ? 700 : 400,
+        bg: s.currentHid === h.id ? a + '14' : 'transparent',
+        opacity: this.isDim(h, des) ? 0.4 : 1,
+        checked: !des[h.id],
+        chev: s.collapsed[h.id] ? '▸' : '▾',
+        chevVis: hasKids ? 'visible' : 'hidden',
+        onToggle: () => this.setState(st => ({ deselected: { ...st.deselected, [h.id]: !st.deselected[h.id] } })),
+        onCollapse: () => this.setState(st => ({ collapsed: { ...st.collapsed, [h.id]: !st.collapsed[h.id] } })),
+        onGo: () => this.goToBlock(h.id),
+      };
+    }).filter(Boolean);
+
+    // option groups
+    const byName = {};
+    for (const oc of parsed.occs) (byName[oc.name] = byName[oc.name] || []).push(oc);
+    const hName = (b) => {
+      if (b.type === 'h') return b.text;
+      const last = b.ancestors[b.ancestors.length - 1];
+      const hb = parsed.blocks.find(x => x.id === last);
+      return hb ? hb.text.replace(/\[([^\]]+)\]\(ph:[^)]+\)/g, '$1') : 'document';
+    };
+    const optionGroups = Object.keys(byName).map(name => {
+      const list = byName[name];
+      const open = !s.optGroupClosed[name];
+      return {
+        name, count: list.length, open,
+        chev: open ? '▾' : '▸',
+        delTitle: 'Can\u2019t delete: option is used ' + list.length + '\u00d7',
+        delCursor: 'not-allowed', delColor: 'var(--disabled)',
+        onCollapse: () => this.setState(st => ({ optGroupClosed: { ...st.optGroupClosed, [name]: !st.optGroupClosed[name] } })),
+        onRename: () => this.renameOption(name),
+        onEdit: () => this.editOption(name, list[0].choices),
+        onDelete: () => window.alert('This option is used ' + list.length + ' time(s) in the document. Remove its uses first, then delete.'),
+        occurrences: list.map(oc => ({
+          where: hName(oc.block),
+          value: s.optionSel[oc.occId] ?? oc.choices[0],
+          choices: oc.choices,
+          onSelect: (e) => this.setState(st => ({ optionSel: { ...st.optionSel, [oc.occId]: e.target.value } })),
+          onGo: () => this.goToBlock(oc.blockId),
+        })),
+      };
+    });
+
+    const nOpts = parsed.occs.length;
+    const nDesel = Object.keys(des).filter(k => des[k]).length;
+
+    return {
+      accent: a,
+      authorEmail: ['adam.mohammad.boulad', 'gmail.com'].join('@'),
+      mailAuthor: () => this.setState({ contactOpen: true }),
+      contactOpen: !!s.contactOpen,
+      closeContact: () => this.setState({ contactOpen: false }),
+      openHelp: () => this.setState({ helpOpen: true }),
+      helpOpen: !!s.helpOpen,
+      closeHelp: () => this.setState({ helpOpen: false }),
+      stop: (e) => e.stopPropagation(),
+      ...(() => {
+        const H = {
+          viewer: {
+            icon: '\u25a4', title: 'Markdown Viewer',
+            body: 'Read and refine a prompt as living markdown. Turn any value into an inline dropdown so one prompt carries switchable choices you pick before copying.',
+            code: '[option name](ph:option 1|option 2|option 3)',
+            tips: [
+              { icon: '\u2726', text: 'Detect Options scans your text with AI and adds selectors automatically.' },
+              { icon: '\u2713', text: 'Uncheck any heading, block, or table row to exclude it from Copy Selected.' },
+              { icon: '\u29c9', text: 'Copy Selected puts the resolved markdown (with your chosen options) on the clipboard.' },
+            ],
+          },
+          builder: {
+            icon: '\u2726', title: 'Prompt Wizard',
+            body: 'Build a prompt section by section. Describe your idea, generate a section structure, then fill each section with AI \u2014 tuning persona, length, and extra context per step.',
+            code: '',
+            tips: [
+              { icon: '1', text: 'Structure: describe the idea and generate a tree of sections; rename, reorder, or deselect them.' },
+              { icon: '2', text: 'Each checked section becomes its own step you generate and edit individually.' },
+              { icon: '3', text: 'Review assembles every generated section, in order, ready to open in the Viewer.' },
+            ],
+          },
+          workshop: {
+            icon: '\u2732', title: 'Enrich Prompt',
+            body: 'Turn a rough prompt into a clean, structured, reusable one in a single pass. Pick a mode, persona, and structure \u2014 the result opens in the Viewer with inline options already added.',
+            code: '',
+            tips: [
+              { icon: '\u25c8', text: 'Mode sets the transformation: Enhance clarifies, Expand adds depth, Plan turns it into steps.' },
+              { icon: '\u25c9', text: 'Persona changes the perspective the result is written from.' },
+              { icon: '\u25a4', text: 'Structure decides which sections the output is organized into.' },
+            ],
+          },
+        };
+        const h = H[s.tab] || H.viewer;
+        return { helpIcon: h.icon, helpTitle: h.title, helpBody: h.body, helpCode: h.code, helpHasCode: !!h.code, helpTips: h.tips };
+      })(),
+      contentFontFamily: ({
+        serif: 'Charter,Georgia,serif',
+        sans: 'system-ui,sans-serif',
+        atkinson: '"Atkinson Hyperlegible",system-ui,sans-serif',
+        lexend: 'Lexend,system-ui,sans-serif',
+        literata: 'Literata,Georgia,serif',
+        'source sans': '"Source Sans 3",system-ui,sans-serif',
+        plex: '"IBM Plex Sans",system-ui,sans-serif',
+        mono: '"JetBrains Mono",ui-monospace,Menlo,monospace',
+      })[s.custom.contentFont ?? this.props.contentFont ?? 'serif'] || 'Charter,Georgia,serif',
+      settingsOpen: s.settingsOpen,
+      toggleSettings: () => this.setState(st => ({ settingsOpen: !st.settingsOpen })),
+      themeChoices: ['light', 'dark'].map(v => {
+        const on = this.theme() === v;
+        return { label: v === 'light' ? '☀ light' : '☾ dark', bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ custom: { ...st.custom, theme: v } })) };
+      }),
+      swatches: ['#0F766E', '#2A6FDB', '#B4552D', '#6D28D9', '#BE185D', '#4D7C0F'].map(c => ({
+        color: c, border: c === a ? 'var(--text)' : 'var(--surface)',
+        onPick: () => this.setState(st => ({ custom: { ...st.custom, accent: c } })),
+      })),
+      styleChoices: ['pill', 'underline', 'boxed', 'plain'].map(v => {
+        const on = (s.custom.selectorStyle ?? this.props.selectorStyle ?? 'pill') === v;
+        return { label: v, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ custom: { ...st.custom, selectorStyle: v } })) };
+      }),
+      custBg: s.settingsOpen ? 'var(--subtle)' : 'var(--surface)',
+      custBorder: s.settingsOpen ? a : 'var(--border)',
+      sizeChoices: [['S', 0.85], ['M', 1], ['L', 1.2]].map(([label, v]) => {
+        const on = (s.custom.fontSize ?? 1) === v;
+        return { label, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ custom: { ...st.custom, fontSize: v } })) };
+      }),
+      layoutChoices: ['comfortable', 'compact'].map(v => {
+        const on = (s.custom.layout ?? 'comfortable') === v;
+        return { label: v, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ custom: { ...st.custom, layout: v } })) };
+      }),
+      fontChoices: ['serif', 'sans', 'atkinson', 'lexend', 'literata', 'source sans', 'plex', 'mono'].map(v => {
+        const on = (s.custom.contentFont ?? this.props.contentFont ?? 'serif') === v;
+        return { label: v, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setState(st => ({ custom: { ...st.custom, selectorStyle: st.custom.selectorStyle, contentFont: v } })) };
+      }),
+      // tabs
+      onViewerTab: s.tab === 'viewer', onBuilderTab: s.tab === 'builder', onWorkshopTab: s.tab === 'workshop',
+      goTabViewer: () => this.setState({ tab: 'viewer' }),
+      goTabBuilder: () => this.setState({ tab: 'builder' }),
+      goTabWorkshop: () => this.setState({ tab: 'workshop' }),
+      tabViewerBorder: s.tab === 'viewer' ? a : 'transparent',
+      tabViewerColor: s.tab === 'viewer' ? 'var(--text)' : 'var(--muted2)',
+      tabViewerWeight: s.tab === 'viewer' ? 600 : 400,
+      tabBuilderBorder: s.tab === 'builder' ? a : 'transparent',
+      tabBuilderColor: s.tab === 'builder' ? 'var(--text)' : 'var(--muted2)',
+      tabBuilderWeight: s.tab === 'builder' ? 600 : 400,
+      tabWorkshopBorder: s.tab === 'workshop' ? a : 'transparent',
+      tabWorkshopColor: s.tab === 'workshop' ? 'var(--text)' : 'var(--muted2)',
+      tabWorkshopWeight: s.tab === 'workshop' ? 600 : 400,
+      // mode
+      isEdit: s.mode === 'edit', isView: s.mode === 'view',
+      setModeEdit: () => this.setState({ mode: 'edit' }),
+      setModeView: () => this.setState({ mode: 'view' }),
+      editBtnBg: s.mode === 'edit' ? 'var(--seg-active)' : 'transparent',
+      editBtnColor: s.mode === 'edit' ? 'var(--text)' : 'var(--muted2)',
+      editBtnShadow: s.mode === 'edit' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+      viewBtnBg: s.mode === 'view' ? 'var(--seg-active)' : 'transparent',
+      viewBtnColor: s.mode === 'view' ? 'var(--text)' : 'var(--muted2)',
+      viewBtnShadow: s.mode === 'view' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+      raw: s.raw,
+      onRawChange: (e) => this.setState({ raw: e.target.value, noOptDismissed: false }),
+      noOptionsPopup: nOpts === 0 && !s.noOptDismissed && !s.noOptNever && s.tab === 'viewer' && s.mode === 'view',
+      dismissNoOptions: () => this.setState({ noOptDismissed: true }),
+      noOptNever: !!s.noOptNever,
+      toggleNoOptNever: () => this.setState(st => ({ noOptNever: !st.noOptNever })),
+      // content
+      blocks, outline, optionGroups,
+      setScrollRef: (el) => { this._scroll = el; },
+      onScroll: () => {
+        if (!this._scroll) return;
+        clearTimeout(this._st);
+        this._st = setTimeout(() => {
+          const els = this._scroll.querySelectorAll('[data-hid]');
+          let cur = null;
+          for (const el of els) {
+            const b = parsed.blocks.find(x => x.id === el.getAttribute('data-hid'));
+            if (!b || b.type !== 'h') continue;
+            if (el.offsetTop <= this._scroll.scrollTop + 90) cur = b.id; else break;
+          }
+          if (cur !== this.state.currentHid) this.setState({ currentHid: cur });
+        }, 80);
+      },
+      // panel
+      panelOpen: s.panelOpen, panelClosed: !s.panelOpen,
+      panelWidthPx: Math.round(s.panelWidth * 100) + 'vw',
+      hidePanel: () => this.setState({ panelOpen: false }),
+      showPanel: () => this.setState({ panelOpen: true }),
+      startResize: (e) => { e.preventDefault(); this._resizing = true; document.body.style.userSelect = 'none'; },
+      // prompt library
+      promptSel: (s.promptName && this.loadPromptStore()[s.promptName] !== undefined) ? s.promptName : (s.raw === SAMPLE ? '__sample' : '__none'),
+      promptNames: Object.keys(this.loadPromptStore()).sort(),
+      onPromptPick: (e) => {
+        const v = e.target.value;
+        if (v === '__manage') { this.setState({ manageOpen: true }); e.target.value = '__none'; return; }
+        if (v !== '__none') this.openPromptByName(v);
+      },
+      manageOpen: !!s.manageOpen,
+      closeManage: () => this.setState({ manageOpen: false }),
+      noSavedPrompts: Object.keys(this.loadPromptStore()).length === 0,
+      promptRows: Object.keys(this.loadPromptStore()).sort().map((name) => ({
+        name,
+        del: () => {
+          if (!window.confirm('Delete saved prompt "' + name + '"?')) return;
+          const p = this.loadPromptStore();
+          delete p[name];
+          this.savePromptStore(p);
+          this.setState({ promptName: this.state.promptName === name ? null : this.state.promptName });
+        },
+      })),
+      savePrompt: () => this.savePrompt(),
+      deletePrompt: () => this.deletePrompt(),
+      importFile: () => this.importFile(),
+      exportFile: () => this.exportFile(),
+      hasPromptName: !!s.promptName,
+      promptName: s.promptName,
+      // actions
+      optAdd: () => this.addOption(),
+      copyLabel: s.copied ? '✓ Copied' : '⧉ Copy Selected',
+      copySelected: () => {
+        const md = this.buildSelectedMarkdown(parsed);
+        navigator.clipboard.writeText(md).catch(() => {});
+        this.setState({ copied: true });
+        clearTimeout(this._ct);
+        this._ct = setTimeout(() => this.setState({ copied: false }), 1500);
+      },
+      detectOptions: () => this.detect(),
+      detectLabel: s.detecting ? '⏳ Detecting…' : '✦ Detect Options',
+      aiOpen: s.aiOpen, aiClosed: !s.aiOpen,
+      toggleAi: () => this.setState(st => ({ aiOpen: !st.aiOpen })),
+      providers: PROVIDERS.map(p => ({ id: p.id, label: p.label })),
+      aiProvider: s.aiCfg.provider,
+      setAiProvider: (e) => this.setState(st => ({ aiCfg: { ...st.aiCfg, provider: e.target.value } })),
+      aiModel: this.aiGet('model'), setAiModel: (e) => this.aiSet('model', e.target.value),
+      modelChoices: (() => {
+        const def = PROVIDERS.find(x => x.id === s.aiCfg.provider) || { models: [] };
+        return def.models.map(mid => ({ id: mid, label: mid })).concat([{ id: '__custom', label: 'Custom…' }]);
+      })(),
+      aiModelSel: (() => {
+        const def = PROVIDERS.find(x => x.id === s.aiCfg.provider) || { models: [] };
+        const m = this.aiGet('model');
+        return def.models.includes(m) ? m : '__custom';
+      })(),
+      aiModelCustom: (() => {
+        const def = PROVIDERS.find(x => x.id === s.aiCfg.provider) || { models: [] };
+        return !def.models.includes(this.aiGet('model'));
+      })(),
+      setAiModelSel: (e) => this.aiSet('model', e.target.value === '__custom' ? '' : e.target.value),
+      aiTempOn: s.aiCfg.provider === 'claude' ? false : this.aiGet('sendTemp'),
+      aiTempOff: s.aiCfg.provider === 'claude' || !this.aiGet('sendTemp'),
+      aiTempLock: s.aiCfg.provider === 'claude',
+      aiTempOpacity: (s.aiCfg.provider !== 'claude' && this.aiGet('sendTemp')) ? 1 : 0.45,
+      toggleAiTemp: () => { if (s.aiCfg.provider !== 'claude') this.aiSet('sendTemp', !this.aiGet('sendTemp')); },
+      aiMaxTokOn: s.aiCfg.provider === 'claude' ? true : this.aiGet('sendMaxTok'),
+      aiMaxTokOff: s.aiCfg.provider === 'claude' ? false : !this.aiGet('sendMaxTok'),
+      aiMaxTokLock: s.aiCfg.provider === 'claude',
+      aiMaxTokOpacity: (s.aiCfg.provider === 'claude' || this.aiGet('sendMaxTok')) ? 1 : 0.45,
+      toggleAiMaxTok: () => { if (s.aiCfg.provider !== 'claude') this.aiSet('sendMaxTok', !this.aiGet('sendMaxTok')); },
+      showTokParam: s.aiCfg.provider !== 'claude' && s.aiCfg.provider !== 'gemini' && this.aiGet('sendMaxTok'),
+      aiTokParam: this.aiGet('tokenParam'),
+      setAiTokParam: (e) => this.aiSet('tokenParam', e.target.value),
+      aiKey: this.aiGet('apiKey'), setAiKey: (e) => this.aiSet('apiKey', e.target.value),
+      aiBaseUrl: this.aiGet('baseUrl'), setAiBaseUrl: (e) => this.aiSet('baseUrl', e.target.value),
+      aiTemp: this.aiGet('temp'), setAiTemp: (e) => this.aiSet('temp', +e.target.value),
+      aiMaxTok: this.aiGet('maxTokens'), setAiMaxTok: (e) => this.aiSet('maxTokens', +e.target.value),
+      aiSystem: s.aiCfg.systemPrompt,
+      setAiSystem: (e) => this.setState(st => ({ aiCfg: { ...st.aiCfg, systemPrompt: e.target.value } })),
+      resetAiSystem: () => this.setState(st => ({ aiCfg: { ...st.aiCfg, systemPrompt: DEFAULT_SYS } })),
+      // enrich tab
+      enInput: s.enrich.input,
+      setEnInput: (e) => this.setEnrich({ input: e.target.value }),
+      enModes: Object.keys(ENRICH_MODES).map(id => {
+        const on = s.enrich.mode === id;
+        return { id, label: ENRICH_MODES[id].label, bg: on ? 'var(--seg-active)' : 'transparent', color: on ? 'var(--text)' : 'var(--muted2)', shadow: on ? '0 1px 2px rgba(0,0,0,.08)' : 'none', onPick: () => this.setEnrich({ mode: id }) };
+      }),
+      enModeSummary: ENRICH_MODES[s.enrich.mode].summary,
+      enModePrompt: this.enrichModePrompt(),
+      setEnModePrompt: (e) => this.setState(st => ({ enrich: { ...st.enrich, modeOv: { ...st.enrich.modeOv, [st.enrich.mode]: e.target.value } } })),
+      enModeCustom: s.enrich.modeOv[s.enrich.mode] !== undefined && s.enrich.modeOv[s.enrich.mode] !== ENRICH_MODES[s.enrich.mode].prompt,
+      resetEnMode: () => this.setState(st => { const o = { ...st.enrich.modeOv }; delete o[st.enrich.mode]; return { enrich: { ...st.enrich, modeOv: o } }; }),
+      enPersona: s.enrich.persona,
+      enPersonaNames: Object.keys(this.libGet('personas')),
+      enAddPersona: () => this.libAdd('personas'),
+      enRenamePersona: () => this.libRename('personas', 'enrich'),
+      enDeletePersona: () => this.libDelete('personas', 'enrich'),
+      enSavePersona: () => this.libSaveDefault('personas', 'enrich'),
+      enAddStruct: () => this.libAdd('structs'),
+      enRenameStruct: () => this.libRename('structs', 'enrich'),
+      enDeleteStruct: () => this.libDelete('structs', 'enrich'),
+      enSaveStruct: () => this.libSaveDefault('structs', 'enrich'),
+      setEnPersona: (e) => this.setEnrich({ persona: e.target.value }),
+      enPersonaPrompt: this.enrichPersonaPrompt(),
+      setEnPersonaPrompt: (e) => this.setState(st => ({ enrich: { ...st.enrich, personaOv: { ...st.enrich.personaOv, [st.enrich.persona]: e.target.value } } })),
+      enPersonaCustom: s.enrich.personaOv[s.enrich.persona] !== undefined && s.enrich.personaOv[s.enrich.persona] !== (this.libGet('personas')[s.enrich.persona] ?? ''),
+      resetEnPersona: () => this.setState(st => { const o = { ...st.enrich.personaOv }; delete o[st.enrich.persona]; return { enrich: { ...st.enrich, personaOv: o } }; }),
+      enStruct: s.enrich.structure,
+      enStructNames: Object.keys(this.libGet('structs')),
+      setEnStruct: (e) => this.setEnrich({ structure: e.target.value }),
+      enStructPrompt: this.enrichStructPrompt(),
+      setEnStructPrompt: (e) => this.setState(st => ({ enrich: { ...st.enrich, structOv: { ...st.enrich.structOv, [st.enrich.structure]: e.target.value } } })),
+      enStructCustom: s.enrich.structOv[s.enrich.structure] !== undefined && s.enrich.structOv[s.enrich.structure] !== (this.libGet('structs')[s.enrich.structure] ?? ''),
+      resetEnStruct: () => this.setState(st => { const o = { ...st.enrich.structOv }; delete o[st.enrich.structure]; return { enrich: { ...st.enrich, structOv: o } }; }),
+      enTree: this.parseStructTree(this.enrichStructPrompt()).map((name, i, arr) => ({ name, conn: i === arr.length - 1 ? '\u2514' : '\u251c' })),
+      enTreeEmpty: this.parseStructTree(this.enrichStructPrompt()).length === 0,
+      enSysOpen: !!s.enrich.sysOpen,
+      toggleEnSys: () => this.setEnrich({ sysOpen: !s.enrich.sysOpen }),
+      enSysChev: s.enrich.sysOpen ? '\u25be' : '\u25b8',
+      enSystem: s.enrich.system,
+      setEnSystem: (e) => this.setEnrich({ system: e.target.value }),
+      resetEnSystem: () => this.setEnrich({ system: ENRICH_SYS }),
+      enGenerate: () => this.generateEnrich(),
+      enGenLabel: s.enrich.generating ? '\u23f3 Generating\u2026' : '\u2726 Generate',
+      enGenerating: !!s.enrich.generating,
+      ...this.wizVals(),
+    };
+  }
+}
+</script>
+</body>
+</html>
