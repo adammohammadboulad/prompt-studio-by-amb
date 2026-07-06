@@ -2,13 +2,19 @@
   "name": "markdown-prompt-studio",
   "displayName": "Prompt Studio by AMB",
   "description": "Turn prompts into living markdown with clickable inline options. Markdown viewer, step-by-step Prompt Wizard, and Enrich Prompt — with Mode, Persona and Structure dials — inside VSCode.",
-  "version": "0.1.0",
-  "publisher": "adam-mohammad-boulad",
+  "version": "0.2.0",
+  "publisher": "AdamMohammadBoulad",
   "author": {
     "name": "Adam Mohammad Boulad",
     "email": "adam.mohammad.boulad@gmail.com"
   },
   "engines": { "vscode": "^1.85.0" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adammohammadboulad/prompt-studio-by-amb.git"
+  },
+  "homepage": "https://github.com/adammohammadboulad/prompt-studio-by-amb#readme",
+  "license": "MIT",
   "bugs": { "email": "adam.mohammad.boulad@gmail.com" },
   "icon": "icon.png",
   "categories": ["Other"],
@@ -33,13 +39,14 @@
       "editor/title": [
         {
           "command": "markdownPromptStudio.openFile",
+          "when": "resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .txt",
           "group": "navigation"
         }
       ],
       "explorer/context": [
         {
           "command": "markdownPromptStudio.openFile",
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .txt",
           "group": "navigation"
         }
       ]

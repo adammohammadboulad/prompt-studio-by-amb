@@ -945,30 +945,22 @@ Try it free today — no credit card required.
 Never overpromise. Cite real benchmarks where possible, and keep the [tone](ph:professional|casual|excited) consistent across channels.
 `;
 
-const DEFAULT_SYS = `You convert a plain markdown prompt into a templated prompt with a small number of high-value inline options, using exactly this format: [option name](ph:choice 1|choice 2|choice 3)
+const DEFAULT_SYS = `# Task Description
+Your task is to analyze the input markdown prompt, identify the places where an option, configuration, decision, or knob is present, and template them using inline option syntax — without changing anything else.
 
-WHAT QUALIFIES as an option — only deliberate authoring knobs the writer would plausibly want to switch between runs:
-- tone / voice / style (professional, casual, playful…)
-- target audience or persona
-- length / level of detail
-- output format or channel (email, tweet, report…)
-- language, reading level, point of view
-- an explicit priority/level word that is clearly a setting
+# Task Steps
+Do the following, in order:
+1. Analyze the input prompt and understand what it is for and which values the author would plausibly want to switch between runs.
+2. Identify every part that is genuinely an option, configuration, decision, or knob — e.g. tone, audience, length or detail level, output format or channel, language, point of view, or interchangeable technology/deployment choices the prompt treats as open.
+4. For each identified option, keep the current value as the default: place the original text verbatim as the FIRST choice, then add 1–4 further choices that are realistic, distinct, and mutually exclusive — not synonyms.
+5. Wrap each one in exactly this format, inline where the value sits: [option name](ph:current value|alternative 1|alternative 2)
+6. Reuse the exact same option name wherever the same concept appears, so occurrences group together. Keep option names short English noun phrases, even in Arabic documents.
+8. Don't change the text beside formatting the options.
 
-WHAT DOES NOT qualify — never wrap these:
-- facts, data, numbers, benchmarks, dates, prices
-- proper nouns, product/company/person names
-- instructions, rules, and constraints themselves ("no jargon", "cite sources")
-- structural words, verbs, or arbitrary adjectives where alternatives wouldn't meaningfully change the output
-- anything inside code blocks, URLs, or existing [x](ph:…) options
+Return ONLY the resulting markdown — no explanations, no commentary, no code fences.
 
-RULES:
-- Be selective: typically 3-8 options total for a document. If nothing qualifies, return the text unchanged.
-- Each option must offer genuinely distinct, mutually exclusive choices — not synonyms.
-- Put the original/most likely value as the first choice; 2-5 concise choices per option.
-- Reuse the exact same option name for the same concept everywhere it appears.
-- Do not change any other text, structure, or formatting.
-Return ONLY the resulting markdown. No explanations, no code fences.`;
+# How to format options
+[option name](ph:default or current value|alternative 1|alternative 2)`;
 
 const ENRICH_CONTRACT = `OUTPUT FORMAT (STRICT):
 Return ONLY a markdown document. No commentary before or after it, and no code fence around the whole output.
@@ -1085,26 +1077,27 @@ const WIZ_LENGTHS = {
 };
 
 const PROVIDERS = [
-  { id: 'openai', label: 'OpenAI', model: 'gpt-4o-mini', base: 'https://api.openai.com',
-    models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-mini', 'gpt-4.1', 'o4-mini', 'o3'] },
-  { id: 'claude', label: 'Claude (Anthropic)', model: 'claude-sonnet-4-5', base: 'https://api.anthropic.com',
-    models: ['claude-sonnet-4-5', 'claude-opus-4-5', 'claude-haiku-4-5', 'claude-3-5-haiku-latest'] },
-  { id: 'gemini', label: 'Gemini (Google)', model: 'gemini-2.5-flash', base: 'https://generativelanguage.googleapis.com',
-    models: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite', 'gemini-2.0-flash'] },
+  { id: 'openai', label: 'OpenAI', model: 'gpt-5.5', base: 'https://api.openai.com',
+    models: ['gpt-5.5','gpt-5.5-pro', 'gpt-5.4', 'gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-5.4-nano'] },
+  { id: 'claude', label: 'Claude (Anthropic)', model: 'claude-sonnet-5', base: 'https://api.anthropic.com',
+    models: ['claude-sonnet-5', 'claude-fable-5', 'claude-opus-4-8', 'claude-haiku-4-5'] },
+  { id: 'gemini', label: 'Gemini (Google)', model: 'gemini-3.5-flash', base: 'https://generativelanguage.googleapis.com',
+    models: ['gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite'] },
   { id: 'local', label: 'Local (Ollama)', model: 'llama3.1', base: 'http://localhost:11434',
     models: ['llama3.1', 'llama3.2', 'mistral', 'qwen2.5', 'gemma2'] },
   { id: 'openrouter', label: 'OpenRouter', model: 'openrouter/auto', base: 'https://openrouter.ai/api',
-    models: ['openrouter/auto', 'anthropic/claude-sonnet-4.5', 'openai/gpt-4o-mini', 'google/gemini-2.5-flash', 'deepseek/deepseek-chat-v3.1'] },
-  { id: 'zai', label: 'Z.ai (GLM)', model: 'glm-4.6', base: 'https://api.z.ai', chatPath: '/api/paas/v4/chat/completions',
-    models: ['glm-4.6', 'glm-4.5', 'glm-4.5-air', 'glm-4.5-flash'] },
-  { id: 'qwen', label: 'Qwen (Alibaba)', model: 'qwen-plus', base: 'https://dashscope-intl.aliyuncs.com/compatible-mode',
-    models: ['qwen-plus', 'qwen-max', 'qwen-turbo', 'qwen3-max'] },
-  { id: 'minimax', label: 'MiniMax', model: 'MiniMax-M2', base: 'https://api.minimax.io',
-    models: ['MiniMax-M2', 'MiniMax-M1', 'MiniMax-Text-01'] },
-  { id: 'grok', label: 'Grok (xAI)', model: 'grok-4-fast', base: 'https://api.x.ai',
-    models: ['grok-4-fast', 'grok-4', 'grok-3', 'grok-3-mini'] },
+    models: ['openrouter/auto', 'deepseek/deepseek-v4-flash', 'xiaomi/mimo-v2.5', 'minimax/minimax-m3', 'tencent/hy3-preview', 'z-ai/glm-5.2', 'deepseek/deepseek-v4-pro', 'anthropic/claude-opus-4.8', 'nvidia/nemotron-3-ultra-550b-a55b:free', 'anthropic/claude-sonnet-5', 'openai/gpt-oss-120b', 'google/gemini-3.5-flash'] },
+  { id: 'zai', label: 'Z.ai (GLM)', model: 'glm-5.2', base: 'https://api.z.ai', chatPath: '/api/paas/v4/chat/completions',
+    models: ['glm-5.2', 'glm-5.1', 'glm-4.6', 'glm-4.5', 'glm-4.5-air', 'glm-4.5-flash'] },
+  { id: 'qwen', label: 'Qwen (Alibaba)', model: 'qwen3.7-max', base: 'https://dashscope-intl.aliyuncs.com/compatible-mode',
+    models: ['qwen3.7-max', 'qwen3.7-plus', 'qwen3.6-max-preview', 'qwen3.5-flash', 'qwen3.6-plus', 'qwen3.5-plus', 'qwen-plus', 'qwen-max', 'qwen-turbo', 'qwen3-max'
+    ] },
+  { id: 'minimax', label: 'MiniMax', model: 'MiniMax-M3', base: 'https://api.minimax.io',
+    models: ['MiniMax-M3', 'MiniMax-M2.7', 'MiniMax-M2', 'MiniMax-M1', 'MiniMax-Text-01'] },
+  { id: 'grok', label: 'Grok (xAI)', model: 'grok-4.3', base: 'https://api.x.ai',
+    models: ['grok-4.3', 'grok-4-fast', 'grok-4', 'grok-3', 'grok-3-mini'] },
   { id: 'groq', label: 'Groq', model: 'llama-3.3-70b-versatile', base: 'https://api.groq.com/openai',
-    models: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'moonshotai/kimi-k2-instruct', 'qwen/qwen3-32b'] },
+    models: ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b'] },
   { id: 'custom', label: 'Custom (OpenAI-compatible)', model: '', base: '', models: [] },
 ];
 
