@@ -173,7 +173,7 @@ function activate(context) {
     vscode.commands.registerCommand('markdownPromptStudio.open', () => openStudio(context)),
     vscode.commands.registerCommand('markdownPromptStudio.openFile', async (uri) => {
       let name, text;
-      if (uri && uri.fsPath) {
+      if (uri && uri.scheme === 'file' && uri.fsPath) {
         const bytes = await vscode.workspace.fs.readFile(uri);
         text = decodeDoc(bytes);
         name = path.basename(uri.fsPath).replace(/\.(md|markdown|txt)$/i, '');

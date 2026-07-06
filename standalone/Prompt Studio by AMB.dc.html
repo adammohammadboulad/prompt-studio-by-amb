@@ -1125,6 +1125,7 @@ class Component extends DCLogic {
         if (saved.enrich && loadStructs[saved.enrich.structure] === undefined && !(saved.enrich.structOv || {})[saved.enrich.structure]) saved.enrich.structure = Object.keys(loadStructs)[0] || this.state.enrich.structure;
         if (saved.enrich && String(saved.enrich.system || '').indexOf('(ph:') === -1) saved.enrich.system = ENRICH_SYS;
         if (saved.wiz) saved.wiz = { ...this.state.wiz, ...saved.wiz, busy: false, rawDraft: null, copied: false };
+        if (!saved.raw || !String(saved.raw).trim()) saved.raw = SAMPLE;
         this.setState(saved);
       }
     } catch (e) {}
