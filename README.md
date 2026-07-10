@@ -1,4 +1,4 @@
-# Prompt Studio by AMB
+# Prompt Studio
 
 Write better prompts, faster — without leaving VSCode. Prompt Studio treats a prompt as a living markdown document with **inline options**: the choices you'd normally rewrite by hand (tone, audience, length, format…) become clickable switches, so one prompt adapts to many situations.
 
@@ -53,11 +53,3 @@ Light or dark theme, accent color, option selector style, font, and layout densi
 - Right-click a `.md` file in the Explorer → **Open in Prompt Studio by AMB**
 
 Prompts, settings, and wizard progress persist across sessions. Open and export use native file dialogs; exports write straight to your workspace.
-
-## To Create an Extension
-cd .\vscode-extension\ 
-npx @vscode/vsce package
-
-
-## Author
-Adam Mohammad Boulad — adam.mohammad.boulad@gmail.com
