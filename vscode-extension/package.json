@@ -23,11 +23,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "markdownPromptStudio.open",
+        "command": "promptstudiobyamb.open",
         "title": "Prompt Studio by AMB: Open"
       },
       {
-        "command": "markdownPromptStudio.openFile",
+        "command": "promptstudiobyamb.openFile",
         "title": "Open in Prompt Studio by AMB",
         "icon": {
           "light": "media/ps-light.png",
@@ -38,14 +38,14 @@
     "menus": {
       "editor/title": [
         {
-          "command": "markdownPromptStudio.openFile",
+          "command": "promptstudiobyamb.openFile",
           "when": "resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .txt",
           "group": "navigation"
         }
       ],
       "explorer/context": [
         {
-          "command": "markdownPromptStudio.openFile",
+          "command": "promptstudiobyamb.openFile",
           "when": "resourceExtname == .md || resourceExtname == .markdown || resourceExtname == .txt",
           "group": "navigation"
         }

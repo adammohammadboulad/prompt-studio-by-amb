@@ -162,32 +162,53 @@ async function openStudio(context) {
   return panel;
 }
 
+// Resolve a loadable doc from a file URI, or fall back to the active editor.
+// Returns { name, text } or null when there's nothing suitable to load.
+async function resolveDoc(uri, { requireMarkdown = false } = {}) {
+  if (uri && uri.scheme === 'file' && uri.fsPath) {
+    const bytes = await vscode.workspace.fs.readFile(uri);
+    return { name: path.basename(uri.fsPath).replace(/\.(md|markdown|txt)$/i, ''), text: decodeDoc(bytes) };
+  }
+  const ed = vscode.window.activeTextEditor;
+  if (!ed || !ed.document) return null;
+  const fn = ed.document.fileName || '';
+  const isMarkdown = /\.(md|markdown|txt)$/i.test(fn) || ed.document.languageId === 'markdown';
+  if (requireMarkdown && !isMarkdown) return null;
+  return { name: path.basename(fn).replace(/\.(md|markdown|txt)$/i, ''), text: ed.document.getText() };
+}
+
+// Open (or reveal) the studio and load a doc into it, surviving the webview ready handshake.
+async function openStudioWithDoc(context, doc) {
+  const p = await openStudio(context);
+  // keep it pending until the webview acks; post immediately if it's already ready
+  pendingDoc = doc;
+  if (webviewReady) p.webview.postMessage({ type: 'loadDoc', name: doc.name, text: doc.text });
+  return p;
+}
+
 function activate(context) {
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-  status.command = 'markdownPromptStudio.open';
+  status.command = 'promptstudiobyamb.open';
   status.text = '$(sparkle) Prompt Studio by AMB';
   status.tooltip = 'Open Prompt Studio by AMB';
   status.show();
   context.subscriptions.push(status);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('markdownPromptStudio.open', () => openStudio(context)),
-    vscode.commands.registerCommand('markdownPromptStudio.openFile', async (uri) => {
-      let name, text;
-      if (uri && uri.scheme === 'file' && uri.fsPath) {
-        const bytes = await vscode.workspace.fs.readFile(uri);
-        text = decodeDoc(bytes);
-        name = path.basename(uri.fsPath).replace(/\.(md|markdown|txt)$/i, '');
-      } else {
-        const ed = vscode.window.activeTextEditor;
-        if (!ed) { vscode.window.showWarningMessage('Open a markdown file first.'); return; }
-        text = ed.document.getText();
-        name = path.basename(ed.document.fileName).replace(/\.(md|markdown|txt)$/i, '');
+    vscode.commands.registerCommand('promptstudiobyamb.open', async () => {
+      // Fresh open with a markdown file focused → load it, so the status-bar icon shows
+      // the file you're looking at. If the studio is already open, just reveal it
+      // (never clobber in-progress studio work — use the editor-title icon to swap files).
+      if (!panel) {
+        const doc = await resolveDoc(null, { requireMarkdown: true });
+        if (doc) { await openStudioWithDoc(context, doc); return; }
       }
-      const p = await openStudio(context);
-      // always keep it pending until the webview acks; post immediately if ready
-      pendingDoc = { name, text };
-      if (webviewReady) p.webview.postMessage({ type: 'loadDoc', name, text });
+      await openStudio(context);
+    }),
+    vscode.commands.registerCommand('promptstudiobyamb.openFile', async (uri) => {
+      const doc = await resolveDoc(uri);
+      if (!doc) { vscode.window.showWarningMessage('Open a markdown file first.'); return; }
+      await openStudioWithDoc(context, doc);
     })
   );
 }
