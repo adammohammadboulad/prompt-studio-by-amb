@@ -9,8 +9,8 @@
 <x-dc>
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Lexend:wght@300..700&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400&family=Source+Sans+3:ital,wght@0,400..700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&amp;family=Lexend:wght@300..700&amp;family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400&amp;family=Source+Sans+3:ital,wght@0,400..700;1,400&amp;family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&amp;family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#faf9f7; --surface:#ffffff; --surface2:#fdfcfa; --sidebar:#f6f4f0;
@@ -39,25 +39,66 @@
 <div style="display:flex;flex-direction:column;height:100vh;overflow:hidden;position:relative" data-screen-label="Markdown Prompt Studio">
 
   <!-- ============ TOP BAR ============ -->
-  <div style="display:flex;align-items:center;height:46px;background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;gap:4px;flex:none">
+  <div style="display:flex;align-items:center;flex-wrap:wrap;min-height:46px;background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;gap:4px;flex:none">
     <div onClick="{{ mailAuthor }}" title="Contact the author" style="font-weight:700;font-size:14px;letter-spacing:-0.01em;margin-right:18px;display:flex;align-items:center;gap:8px;cursor:pointer">
       <img src="./brand-icon.png" alt="" style="width:22px;height:22px;border-radius:6px">
-      Prompt Studio by AMB
+      <span style="display:{{ brandTextDisplay }};white-space:nowrap">Prompt Studio by AMB</span>
     </div>
-    <button onClick="{{ goTabViewer }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabViewerBorder }};color:{{ tabViewerColor }};font-weight:{{ tabViewerWeight }}">Markdown Viewer</button>
-    <button onClick="{{ goTabBuilder }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabBuilderBorder }};color:{{ tabBuilderColor }};font-weight:{{ tabBuilderWeight }}">Prompt Wizard</button>
-    <button onClick="{{ goTabWorkshop }}" style="border:none;background:none;cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabWorkshopBorder }};color:{{ tabWorkshopColor }};font-weight:{{ tabWorkshopWeight }}">Enrich Prompt</button>
+    <button onClick="{{ goTabViewer }}" style="display:flex;align-items:center;gap:7px;border:none;background:{{ tabViewerBg }};cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabViewerBorder }};color:{{ tabViewerColor }};font-weight:{{ tabViewerWeight }}"><span style="font-size:14px;color:{{ tabViewerIcon }}">▤</span>Markdown Viewer</button>
+    <button onClick="{{ goTabBuilder }}" style="display:flex;align-items:center;gap:7px;border:none;background:{{ tabBuilderBg }};cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabBuilderBorder }};color:{{ tabBuilderColor }};font-weight:{{ tabBuilderWeight }}"><span style="font-size:14px;color:{{ tabBuilderIcon }}">✦</span>Prompt Wizard</button>
+    <button onClick="{{ goTabWorkshop }}" style="display:flex;align-items:center;gap:7px;border:none;background:{{ tabWorkshopBg }};cursor:pointer;font-size:13px;padding:0 12px;height:46px;border-bottom:2px solid {{ tabWorkshopBorder }};color:{{ tabWorkshopColor }};font-weight:{{ tabWorkshopWeight }}"><span style="font-size:14px;color:{{ tabWorkshopIcon }}">✲</span>Enrich Prompt</button>
     <div style="flex:1"></div>
-    <button onClick="{{ openHelp }}" title="How inline options work" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;width:30px;font-size:13px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">?</button>
+    <button onClick="{{ openHelp }}" title="How inline options work" style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)" data-om-label="Help"><span style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1.5px solid {{ accent }};color:{{ accent }};font-size:10px;font-weight:800;line-height:1">?</span>Tutorial</button>
     <sc-if value="{{ onViewerTab }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ detectOptions }}" style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ detectLabel }}</button>
-      <button onClick="{{ copySelected }}" style="display:flex;align-items:center;gap:6px;border:none;background:{{ accent }};color:#fff;border-radius:7px;height:30px;padding:0 14px;font-size:12.5px;font-weight:600;cursor:pointer">{{ copyLabel }}</button>
-      <button onClick="{{ toggleSettings }}" data-cust-btn="1" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
+      <button onClick="{{ toggleSettings }}" data-cust-btn="1" data-tour="t-custom" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
     </sc-if>
     <sc-if value="{{ onBuilderTab }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ toggleSettings }}" data-cust-btn="1" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
+      <button onClick="{{ toggleSettings }}" data-cust-btn="1" data-tour="t-custom" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
+    </sc-if>
+    <sc-if value="{{ onWorkshopTab }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleSettings }}" data-cust-btn="1" data-tour="t-custom" style="display:flex;align-items:center;gap:6px;border:1px solid {{ custBorder }};background:{{ custBg }};border-radius:7px;height:30px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)"><span style="font-weight:800;font-size:13px;color:{{ accent }}">Aa</span> Customize</button>
     </sc-if>
   </div>
+
+  <!-- ============ GUIDED TOUR ============ -->
+  <sc-if value="{{ tourActive }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:120">
+      <div style="position:absolute;top:{{ tourSpotTop }};left:{{ tourSpotLeft }};width:{{ tourSpotW }};height:{{ tourSpotH }};border-radius:10px;box-shadow:0 0 0 9999px rgba(24,22,19,.52),0 0 0 2.5px {{ accent }};transition:all .28s ease;pointer-events:none"></div>
+      <div style="position:absolute;top:{{ tourTipTop }};left:{{ tourTipLeft }};transform:{{ tourTipTransform }};width:330px;max-width:calc(100vw - 24px);background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.28);padding:15px 17px;display:flex;flex-direction:column;gap:9px;transition:top .28s ease,left .28s ease">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:{{ accent }}">Tutorial · {{ tourStepLabel }}</span>
+          <button onClick="{{ tourClose }}" title="Close tutorial" style="border:none;background:none;cursor:pointer;font-size:14px;color:var(--muted2);padding:0;line-height:1">✕</button>
+        </div>
+        <div style="font-size:14.5px;font-weight:700;color:var(--text)">{{ tourTitle }}</div>
+        <div style="font-size:12.5px;line-height:1.6;color:var(--text3)">{{ tourBody }}</div>
+        <sc-if value="{{ tourOptionFormat }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1px solid var(--border);background:var(--subtle);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2)">Markdown</div>
+            <div style="background:var(--surface);border:1px solid var(--border3);border-radius:7px;padding:7px 8px;font:12px/1.45 ui-monospace,Menlo,monospace;color:var(--text);word-break:break-word">[output style](ph:brief|detailed|checklist)</div>
+            <div style="display:flex;align-items:center;justify-content:center;font:700 13px/1 ui-monospace,Menlo,monospace;color:{{ accent }}">=&gt;</div>
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted2)">Rendered in View</div>
+            <div style="background:var(--surface);border:1px solid var(--border3);border-radius:7px;padding:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span style="font-size:12px;color:var(--text3)">output style</span>
+              <span style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{ accent }};background:{{ accent }};color:#fff;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700;white-space:nowrap">brief <span style="font-size:10px;opacity:.85">v</span></span>
+            </div>
+          </div>
+        </sc-if>
+        <div style="display:flex;gap:5px;padding:2px 0">
+          <sc-for list="{{ tourDots }}" as="d" hint-placeholder-count="5">
+            <span style="width:6px;height:6px;border-radius:50%;background:{{ accent }};opacity:{{ d.op }}"></span>
+          </sc-for>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted2);cursor:pointer;flex:1">
+            <input type="checkbox" checked="{{ tourDontShow }}" onChange="{{ toggleTourDontShow }}" style="accent-color:{{ accent }};cursor:pointer">
+            Don't show again
+          </label>
+          <button onClick="{{ tourBack }}" style="display:{{ tourBackDisplay }};align-items:center;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:30px;padding:0 12px;font-size:12px;cursor:pointer;color:var(--text)">← Back</button>
+          <button onClick="{{ tourNext }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:30px;padding:0 14px;font-size:12px;font-weight:600;cursor:pointer">{{ tourNextLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 
   <!-- ============ CONTACT POPUP ============ -->
   <sc-if value="{{ contactOpen }}" hint-placeholder-val="{{ false }}">
@@ -65,8 +106,7 @@
       <div style="background:var(--surface);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.2);width:400px;max-width:90vw;padding:22px 24px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center">
         <img src="./brand-icon.png" alt="" style="width:96px;height:96px;border-radius:20px">
         <div style="font-size:16px;font-weight:700;color:var(--text)">Prompt Studio by AMB</div>
-        <div style="font-size:13px;line-height:1.6;color:var(--text3)">Created by <strong>Adam Mohammad Boulad</strong>.<br>Reach out with feedback or ideas at:</div>
-        <div style="font-size:13.5px;font-weight:600;color:{{ accent }};font-family:ui-monospace,Menlo,monospace;background:var(--subtle);border:1px solid var(--border);border-radius:8px;padding:8px 14px">{{ authorEmail }}</div>
+        <div style="font-size:13px;line-height:1.6;color:var(--text3)">We'd love your <a href="https://github.com/adammohammadboulad/prompt-studio" target="_blank" rel="noopener" onClick="{{ stop }}" style="color:{{ accent }};font-weight:600;text-decoration:underline;cursor:pointer">feedback</a>.</div>
         <button onClick="{{ closeContact }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 20px;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:4px">Close</button>
       </div>
     </div>
@@ -111,7 +151,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2);cursor:pointer;flex:1">
-            <input type="checkbox" checked="{{ noOptNever }}" onChange="{{ toggleNoOptNever }}" style="accent-color:{{ accent }};cursor:pointer"></input>
+            <input type="checkbox" checked="{{ noOptNever }}" onChange="{{ toggleNoOptNever }}" style="accent-color:{{ accent }};cursor:pointer">
             Don't show this again
           </label>
           <button onClick="{{ dismissNoOptions }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)">Got it</button>
@@ -182,7 +222,7 @@
 
     <!-- ---- AI Settings right sidebar (order:10 puts it at the far right) ---- -->
     <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
-      <div style="order:-10;width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+      <div data-tour="t-ai" style="order:-10;width:min(290px,38vw);flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
         <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
           AI Settings <span style="font-size:12px">⟨</span>
         </button>
@@ -199,31 +239,31 @@
               <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
             </select>
             <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
-              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
-            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
-            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;gap:10px">
             <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Temperature: {{ aiTemp }}
               </label>
-              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%">
             </div>
             <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Max tokens
               </label>
-              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%">
             </div>
           </div>
           <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
@@ -250,75 +290,111 @@
 
     <!-- ---- Collapsed AI settings bar ---- -->
     <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ toggleAi }}" style="order:-10;width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+      <button onClick="{{ toggleAi }}" data-tour="t-ai" style="order:-10;width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
         <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
+      </button>
+    </sc-if>
+
+    <!-- ---- Outline navigation rail ---- -->
+    <sc-if value="{{ outlineOpen }}" hint-placeholder-val="{{ true }}">
+      <div data-tour="v-outline" style="order:-5;width:200px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+        <button onClick="{{ hideOutline }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
+          Outline <span style="font-size:12px">⟨</span>
+        </button>
+        <div style="flex:1;overflow-y:auto;padding:16px 8px 24px">
+          <sc-for list="{{ outline }}" as="o" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;margin-left:{{ o.pad }};opacity:{{ o.opacity }}">
+              <div style="display:flex;align-items:center;gap:7px;padding:2px 8px;border-radius:6px" style-hover="background:var(--hover)">
+                <button onClick="{{ o.onCollapse }}" title="Expand / collapse section" style="flex:none;width:13px;height:13px;border:1px solid var(--border3);background:var(--surface);border-radius:1px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font:700 11px/1 ui-monospace,Menlo,monospace;padding:0;box-sizing:border-box" style-hover="background:var(--hover);border-color:{{ accent }};color:{{ accent }}">{{ o.chev }}</button>
+                <button onClick="{{ o.onToggle }}" title="{{ o.nodeTitle }}" style="flex:none;width:13px;height:13px;border-radius:2px;cursor:pointer;background:{{ o.nodeBg }};border:1px solid {{ o.nodeBorder }};color:{{ o.nodeColor }};display:inline-flex;align-items:center;justify-content:center;font:700 10px/1 system-ui,sans-serif;padding:0;box-sizing:border-box;box-shadow:{{ o.nodeGlow }}" style-hover="border-color:{{ accent }}">{{ o.nodeMark }}</button>
+                <a onClick="{{ o.onGo }}" style="font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:{{ o.labelColor }};cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:{{ o.weight }}">{{ o.text }}</a>
+              </div>
+              <sc-if value="{{ o.notLast }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:none;width:1.5px;height:13px;background:var(--border3);margin-left:13px"></div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ outlineClosed }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ showOutline }}" data-tour="v-outline" style="order:-5;width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Outline&nbsp;&nbsp;⟩</span>
       </button>
     </sc-if>
 
     <!-- ---- Main column ---- -->
     <div style="flex:1;min-width:0;display:flex;flex-direction:column">
       <!-- toolbar -->
-      <div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 18px;border-bottom:1px solid var(--border2);background:var(--surface2);flex:none">
-        <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
-          <button onClick="{{ setModeEdit }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ editBtnBg }};color:{{ editBtnColor }};font-weight:600;box-shadow:{{ editBtnShadow }}">Edit</button>
-          <button onClick="{{ setModeView }}" style="border:none;border-radius:5px;padding:4px 14px;font-size:12px;cursor:pointer;background:{{ viewBtnBg }};color:{{ viewBtnColor }};font-weight:600;box-shadow:{{ viewBtnShadow }}">View</button>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-height:40px;padding:4px 18px;border-bottom:1px solid var(--border2);background:var(--surface2);flex:none">
+        <div data-tour="v-mode" style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;background:var(--seg);border-radius:8px;padding:3px">
+            <button onClick="{{ setModeEdit }}" title="Edit the raw markdown" style="display:flex;align-items:center;gap:6px;border:none;border-radius:6px;padding:6px 15px;font-size:12.5px;cursor:pointer;background:{{ editBtnBg }};color:{{ editBtnColor }};font-weight:700;box-shadow:{{ editBtnShadow }}">✎ Edit</button>
+            <button onClick="{{ setModeView }}" title="Interactive view with clickable options" style="display:flex;align-items:center;gap:6px;border:none;border-radius:6px;padding:6px 15px;font-size:12.5px;cursor:pointer;background:{{ viewBtnBg }};color:{{ viewBtnColor }};font-weight:700;box-shadow:{{ viewBtnShadow }}">👁 View</button>
+          </div>
+          <span style="font-size:11px;color:var(--muted2);max-width:150px;line-height:1.3">{{ modeHint }}</span>
         </div>
         <div style="width:1px;height:20px;background:var(--border)"></div>
-        <div style="position:relative;display:flex;align-items:center">
-          <select value="{{ promptSel }}" onChange="{{ onPromptPick }}" style="border:1px solid var(--border3);border-radius:6px;padding:4px 6px;font-size:12px;background:var(--surface);cursor:pointer;max-width:180px">
-            <option value="__none" disabled="{{ true }}" hidden="{{ true }}">Unsaved template</option>
-            <option value="__sample">★ Default template</option>
-            <sc-for list="{{ promptNames }}" as="pn" hint-placeholder-count="0"><option value="{{ pn }}">{{ pn }}</option></sc-for>
-            <option value="__manage">🗑 Manage templates…</option>
-          </select>
-          <sc-if value="{{ manageOpen }}" hint-placeholder-val="{{ false }}">
-            <div style="position:absolute;top:32px;left:0;z-index:50;min-width:240px;max-height:300px;overflow:auto;background:var(--surface);border:1px solid var(--border3);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);padding:6px">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px 6px;border-bottom:1px solid var(--border2);margin-bottom:4px">
-                <span style="font-size:11.5px;font-weight:600;color:var(--muted)">Saved templates</span>
-                <button onClick="{{ closeManage }}" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted2);padding:0 2px">✕</button>
+        <div data-tour="v-templates" style="position:relative;display:flex;align-items:center">
+          <button onClick="{{ toggleTpl }}" title="Load, save, or delete templates" style="display:flex;align-items:center;gap:7px;border:1px solid {{ tplBtnBorder }};background:var(--surface);border-radius:7px;height:30px;padding:0 12px;font-size:12px;cursor:pointer;color:var(--text);max-width:250px" style-hover="background:var(--subtle)">
+            <span>🗂</span>
+            <span style="color:var(--muted2);font-weight:600">Template</span>
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700">{{ tplLabel }}</span>
+            <span style="font-size:9px;color:var(--muted2)">▾</span>
+          </button>
+          <sc-if value="{{ tplOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:36px;left:0;z-index:50;width:280px;max-height:360px;overflow:auto;background:var(--surface);border:1px solid var(--border3);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.16);padding:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 6px 8px;border-bottom:1px solid var(--border2);margin-bottom:6px">
+                <span style="font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Templates</span>
+                <button onClick="{{ closeTpl }}" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted2);padding:0 2px">✕</button>
               </div>
-              <sc-if value="{{ noSavedPrompts }}" hint-placeholder-val="{{ false }}">
-                <div style="padding:8px;font-size:12px;color:var(--muted2)">No saved templates.</div>
-              </sc-if>
-              <sc-for list="{{ promptRows }}" as="row" hint-placeholder-count="0">
-                <div style="display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:6px" style-hover="background:var(--subtle)">
-                  <span style="flex:1;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.name }}</span>
-                  <button onClick="{{ row.del }}" title="Delete this template" style="border:none;background:none;cursor:pointer;font-size:12px;color:var(--muted2);padding:1px">🗑</button>
+              <button onClick="{{ saveTplAs }}" style="display:flex;align-items:center;gap:7px;width:100%;border:1px dashed var(--border3);background:none;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer;color:{{ accent }};margin-bottom:6px" style-hover="background:var(--subtle)">💾 Save current as template…</button>
+              <sc-for list="{{ tplRows }}" as="row" hint-placeholder-count="1">
+                <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;background:{{ row.bg }};cursor:pointer" style-hover="background:var(--subtle)">
+                  <span onClick="{{ row.open }}" style="flex:none;width:14px;font-size:11px;color:{{ accent }};font-weight:700">{{ row.check }}</span>
+                  <span onClick="{{ row.open }}" style="flex:1;font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:{{ row.weight }}">{{ row.label }}</span>
+                  <button onClick="{{ row.del }}" title="Delete this template" style="display:{{ row.delDisplay }};border:none;background:none;cursor:pointer;font-size:12px;color:var(--muted2);padding:1px" style-hover="color:#c0392b">🗑</button>
                 </div>
               </sc-for>
+              <sc-if value="{{ noSavedPrompts }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:6px 8px 2px;font-size:11px;color:var(--muted3);line-height:1.4">No saved templates yet — edit the prompt, then use “Save current as template…”.</div>
+              </sc-if>
             </div>
           </sc-if>
         </div>
-        <button onClick="{{ savePrompt }}" title="Save current prompt" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 10px;font-size:12px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">💾 Save</button>
         <button onClick="{{ importFile }}" title="Open a .md file" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 8px;font-size:12px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">⤒ Open</button>
         <button onClick="{{ exportFile }}" title="Download as .md" style="border:1px solid var(--border3);background:var(--surface);border-radius:6px;height:26px;padding:0 8px;font-size:12px;cursor:pointer;color:var(--muted)" style-hover="background:var(--subtle)">⤓ Export</button>
         <div style="flex:1"></div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted2)">
+        <div style="display:{{ legendDisplay }};align-items:center;gap:6px;font-size:11.5px;color:var(--muted2)">
           <span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:{{ accent }};opacity:.25"></span> deselected = excluded from copy
         </div>
+        <button onClick="{{ detectOptions }}" data-tour="v-detect" style="display:flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ detectLabel }}</button>
+        <button onClick="{{ copySelected }}" data-tour="v-copy" style="display:flex;align-items:center;gap:6px;border:none;background:{{ accent }};color:#fff;border-radius:7px;height:28px;padding:0 14px;font-size:12.5px;font-weight:600;cursor:pointer">{{ copyLabel }}</button>
       </div>
 
       <!-- EDIT -->
       <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
-        <textarea value="{{ raw }}" onChange="{{ onRawChange }}" spellCheck="{{ false }}" style="flex:1;width:100%;border:none;resize:none;padding:26px 34px;font:13px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2);background:var(--surface2)"></textarea>
+        <div style="flex:1;min-height:0;display:flex;background:var(--surface2)">
+          <div ref="{{ rawGutterRef }}" style="flex:none;width:34px;overflow:hidden;padding:26px 0;text-align:right;border-right:1px solid var(--border2);user-select:none">
+            <sc-for list="{{ rawLineNums }}" as="ln" hint-placeholder-count="10">
+              <div style="font:11px/22.1px ui-monospace,Menlo,Consolas,monospace;color:var(--muted3);padding-right:8px">{{ ln }}</div>
+            </sc-for>
+          </div>
+          <textarea value="{{ raw }}" onChange="{{ onRawChange }}" onScroll="{{ onRawScroll }}" spellCheck="{{ false }}" wrap="off" style="flex:1;width:100%;border:none;resize:none;padding:26px 34px 26px 16px;font:13px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2);background:var(--surface2)"></textarea>
+        </div>
       </sc-if>
 
       <!-- VIEW -->
       <sc-if value="{{ isView }}" hint-placeholder-val="{{ true }}">
-        <div ref="{{ setScrollRef }}" onScroll="{{ onScroll }}" style="flex:1;overflow-y:auto;padding:30px 46px 120px;font-family:{{ contentFontFamily }}">
+        <div ref="{{ setScrollRef }}" onScroll="{{ onScroll }}" style="flex:1;overflow-y:auto;padding:30px clamp(14px,4vw,46px) 120px 10px;font-family:{{ contentFontFamily }}">
           <div>
           <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="8">
             <div data-hid="{{ b.hid }}" style="display:flex;align-items:stretch;opacity:{{ b.opacity }};transition:opacity .15s">
-              <div style="flex:none;width:30px;text-align:right;color:var(--faint);font-family:ui-monospace,Menlo,monospace;font-size:10.5px;padding:{{ b.pad }}"><span style="display:inline-block;margin-top:{{ b.numTop }}">{{ b.line }}</span></div>
-              <div style="flex:none;width:3px;margin:0 7px 0 9px;background:{{ b.railColor }};border-radius:2px"></div>
-              <div style="flex:none;width:15px;padding:{{ b.pad }}">
-                <sc-if value="{{ b.hasCollapse }}" hint-placeholder-val="{{ false }}">
-                  <button onClick="{{ b.onCollapse }}" style="border:none;background:none;cursor:pointer;color:var(--faint2);font-size:11px;padding:0;width:14px;margin-top:{{ b.chevTop }}">{{ b.chev }}</button>
-                </sc-if>
-              </div>
+              <div style="flex:none;width:20px;text-align:right;color:var(--faint);font-family:ui-monospace,Menlo,monospace;font-size:10px;padding:{{ b.pad }}"><span style="display:inline-block;margin-top:{{ b.numTop }}">{{ b.line }}</span></div>
+              <div style="flex:none;width:3px;margin:0 5px 0 6px;background:{{ b.railColor }};border-radius:2px"></div>
               <div style="flex:none;width:20px;padding:{{ b.pad }}">
                 <sc-if value="{{ b.hasCheck }}" hint-placeholder-val="{{ false }}">
-                  <input type="checkbox" checked="{{ b.checked }}" onChange="{{ b.onToggle }}" style="margin-top:{{ b.checkTop }};accent-color:{{ accent }};cursor:pointer;width:14px;height:14px"></input>
+                  <input type="checkbox" checked="{{ b.checked }}" onChange="{{ b.onToggle }}" style="margin-top:{{ b.checkTop }};accent-color:{{ accent }};cursor:pointer;width:14px;height:14px">
                 </sc-if>
               </div>
               <div style="flex:1;min-width:0;padding:{{ b.pad }};margin-left:{{ b.indent }}">{{ b.el }}</div>
@@ -334,26 +410,12 @@
       <div onMouseDown="{{ startResize }}" style="width:5px;cursor:col-resize;background:var(--border2);flex:none" style-hover="background:{{ accent }}"></div>
 
       <!-- ---- Right panel ---- -->
-      <div style="width:{{ panelWidthPx }};flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-left:1px solid var(--border);min-height:0">
+      <div data-tour="v-panel" style="width:{{ panelWidthPx }};flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-left:1px solid var(--border);min-height:0">
         <button onClick="{{ hidePanel }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
-          Outline &amp; Options <span style="font-size:12px">⟩</span>
+          Options <span style="font-size:12px">⟩</span>
         </button>
 
-        <!-- Outline (upper half) -->
-        <div style="flex:1;min-height:0;display:flex;flex-direction:column;border-bottom:1px solid var(--border)">
-          <div style="flex:none;padding:9px 12px 5px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Outline</div>
-          <div style="flex:1;overflow-y:auto;padding:0 6px 10px">
-            <sc-for list="{{ outline }}" as="o" hint-placeholder-count="5">
-              <div style="display:flex;align-items:center;gap:5px;padding:3px 6px 3px {{ o.pad }};border-radius:6px;background:{{ o.bg }};opacity:{{ o.opacity }}" style-hover="background:var(--hover)">
-                <button onClick="{{ o.onCollapse }}" style="border:none;background:none;cursor:pointer;color:var(--faint2);font-size:10px;width:12px;padding:0;visibility:{{ o.chevVis }}">{{ o.chev }}</button>
-                <input type="checkbox" checked="{{ o.checked }}" onChange="{{ o.onToggle }}" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px;flex:none"></input>
-                <a onClick="{{ o.onGo }}" style="font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:{{ o.weight }}">{{ o.text }}</a>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-
-        <!-- Options (lower half) -->
+        <!-- Options -->
         <div style="flex:1;min-height:0;display:flex;flex-direction:column">
           <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:9px 12px 5px">
             <span style="font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Options</span>
@@ -391,8 +453,8 @@
 
     <!-- ---- Collapsed panel bar ---- -->
     <sc-if value="{{ panelClosed }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ showPanel }}" style="width:26px;flex:none;border:none;border-left:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
-        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">⟨&nbsp;&nbsp;Outline &amp; Options</span>
+      <button onClick="{{ showPanel }}" data-tour="v-panel" style="width:26px;flex:none;border:none;border-left:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+        <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">⟨&nbsp;&nbsp;Options</span>
       </button>
     </sc-if>
   </div>
@@ -404,7 +466,7 @@
 
     <!-- ---- AI Settings sidebar (Wizard: no system prompt — it lives on each step) ---- -->
     <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
-      <div style="width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+      <div data-tour="t-ai" style="width:min(290px,38vw);flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
         <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
           AI Settings <span style="font-size:12px">⟨</span>
         </button>
@@ -421,31 +483,31 @@
               <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
             </select>
             <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
-              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
-            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
-            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;gap:10px">
             <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Temperature: {{ aiTemp }}
               </label>
-              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%">
             </div>
             <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Max tokens
               </label>
-              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%">
             </div>
           </div>
           <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
@@ -464,15 +526,37 @@
       </div>
     </sc-if>
     <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ toggleAi }}" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+      <button onClick="{{ toggleAi }}" data-tour="t-ai" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
         <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
       </button>
     </sc-if>
 
     <div style="flex:1;min-width:0;min-height:0;display:flex;flex-direction:column">
 
+      <!-- toolbar -->
+      <div data-tour="w-toolbar" style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-height:40px;padding:4px 18px;border-bottom:1px solid var(--border2);background:var(--surface2);flex:none">
+        <span style="font-size:11px;color:var(--muted3)">{{ wizFootNote }}</span>
+        <div style="flex:1"></div>
+        <sc-if value="{{ wizOnStructure }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ wizGenStructure }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:28px;padding:0 16px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenStructLabel }}</button>
+          <sc-if value="{{ wizHasItems }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{ wizOnSection }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
+          <button onClick="{{ wizGenSection }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:28px;padding:0 16px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenSecLabel }}</button>
+          <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
+        </sc-if>
+        <sc-if value="{{ wizOnReview }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
+          <button onClick="{{ wizCopy }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:28px;padding:0 12px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizCopyLabel }}</button>
+          <button onClick="{{ wizOpenViewer }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:28px;padding:0 16px;font-size:12.5px;font-weight:600;cursor:pointer">Open in Markdown Viewer →</button>
+        </sc-if>
+      </div>
+
       <!-- Step progress bar -->
-      <div style="flex:none;display:flex;align-items:center;padding:12px 20px 6px;overflow-x:auto">
+      <div data-tour="w-steps" style="flex:none;display:flex;align-items:center;padding:12px 20px 6px;overflow-x:auto">
         <sc-for list="{{ wizSteps }}" as="ws" hint-placeholder-count="3">
           <div style="display:flex;align-items:center;flex:none">
             <sc-if value="{{ ws.notFirst }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:18px;height:1px;background:var(--border3);margin:0 4px"></span></sc-if>
@@ -486,19 +570,19 @@
 
       <!-- STEP: STRUCTURE -->
       <sc-if value="{{ wizOnStructure }}" hint-placeholder-val="{{ true }}">
-        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr;gap:12px;padding:6px 20px 12px">
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:{{ wizGridCols }};grid-auto-rows:{{ gridRows }};overflow-y:{{ gridOverflow }};gap:12px;padding:6px 20px 12px">
 
           <!-- Left: inputs -->
-          <div style="min-height:0;display:flex;flex-direction:column;gap:10px">
-            <div style="flex:1.3;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:10px">
+            <div data-tour="w-input" style="flex:1.3;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <div style="display:flex;align-items:baseline;gap:10px">
                 <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Initial Input</span>
-                <span style="font-size:11.5px;color:var(--muted3)">Your idea or rough prompt — the AI suggests a structure from it</span>
+                <span style="display:{{ subtleNoteDisplay }};font-size:11.5px;color:var(--muted3)">Your idea or rough prompt — the AI suggests a structure from it</span>
               </div>
-              <textarea value="{{ wizInput }}" onChange="{{ setWizInput }}" spellCheck="{{ false }}" placeholder="Describe what the final prompt should do, e.g. 'a prompt that reviews pull requests for security issues'…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+              <textarea value="{{ wizInput }}" onChange="{{ setWizInput }}" spellCheck="{{ false }}" placeholder="Describe what the final prompt should do, e.g. 'a prompt that reviews pull requests for security issues'…" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
             </div>
 
-            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="flex:1;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <div style="display:flex;align-items:center;justify-content:space-between;min-height:16px">
                 <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona</span>
                 <div style="display:flex;align-items:center;gap:7px">
@@ -506,18 +590,18 @@
                     <button onClick="{{ wizSavePersona }}" title="Save the edited prompt as this persona's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
                     <button onClick="{{ resetWizPersona }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
                   </sc-if>
-                  <button onClick="{{ wizAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
-                  <button onClick="{{ wizRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
-                  <button onClick="{{ wizDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+                  <button onClick="{{ wizAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">＋ Add</button>
+                  <button onClick="{{ wizRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Rename</button>
+                  <button onClick="{{ wizDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Delete</button>
                 </div>
               </div>
               <select value="{{ wizPersona }}" onChange="{{ setWizPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
                 <sc-for list="{{ wizPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
               </select>
-              <textarea value="{{ wizPersonaPromptV }}" onChange="{{ setWizPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+              <textarea value="{{ wizPersonaPromptV }}" onChange="{{ setWizPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
             </div>
 
-            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="flex:1;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <div style="display:flex;align-items:center;justify-content:space-between;min-height:16px">
                 <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Structure</span>
                 <div style="display:flex;align-items:center;gap:7px">
@@ -525,15 +609,15 @@
                     <button onClick="{{ wizSaveStruct }}" title="Save the edited prompt as this structure's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
                     <button onClick="{{ resetWizStruct }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
                   </sc-if>
-                  <button onClick="{{ wizAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
-                  <button onClick="{{ wizRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
-                  <button onClick="{{ wizDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+                  <button onClick="{{ wizAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">＋ Add</button>
+                  <button onClick="{{ wizRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Rename</button>
+                  <button onClick="{{ wizDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Delete</button>
                 </div>
               </div>
               <select value="{{ wizStructName }}" onChange="{{ setWizStructSel }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
                 <sc-for list="{{ wizStructNames }}" as="sn" hint-placeholder-count="4"><option value="{{ sn }}">{{ sn }}</option></sc-for>
               </select>
-              <textarea value="{{ wizStructPromptV }}" onChange="{{ setWizStructPrompt }}" spellCheck="{{ false }}" title="Structure guidance sent to the model when suggesting sections" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+              <textarea value="{{ wizStructPromptV }}" onChange="{{ setWizStructPrompt }}" spellCheck="{{ false }}" title="Structure guidance sent to the model when suggesting sections" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
             </div>
 
             <div style="flex:none;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px">
@@ -548,7 +632,7 @@
           </div>
 
           <!-- Right: suggested structure -->
-          <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
             <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Suggested Structure</span>
               <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
@@ -566,7 +650,7 @@
               <div style="flex:1;min-height:0;overflow-y:auto;border:1px solid var(--border2);background:var(--bg);border-radius:8px;padding:8px 10px">
                 <sc-for list="{{ wizTree }}" as="wt" hint-placeholder-count="6">
                   <div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;margin-left:{{ wt.indent }};border-radius:6px;opacity:{{ wt.opacity }}" style-hover="background:#f1eee8">
-                    <input type="checkbox" checked="{{ wt.checked }}" onChange="{{ wt.onToggle }}" title="Include this section" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px;flex:none;margin-top:3px"></input>
+                    <input type="checkbox" checked="{{ wt.checked }}" onChange="{{ wt.onToggle }}" title="Include this section" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px;flex:none;margin-top:3px">
                     <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
                       <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:{{ wt.weight }};color:var(--text2)">{{ wt.title }}</span>
                       <sc-if value="{{ wt.hasDesc }}" hint-placeholder-val="{{ false }}">
@@ -582,7 +666,7 @@
               <div style="font-size:11px;color:var(--muted3)">Unchecked sections are skipped. Each checked section becomes its own wizard step.</div>
             </sc-if>
             <sc-if value="{{ wizShowRaw }}" hint-placeholder-val="{{ false }}">
-              <textarea value="{{ wizRaw }}" onChange="{{ setWizRaw }}" spellCheck="{{ false }}" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+              <textarea value="{{ wizRaw }}" onChange="{{ setWizRaw }}" spellCheck="{{ false }}" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
               <div style="font-size:11px;color:var(--muted3)">## Section · ### Subsection — one per line, each optionally followed by a plain-text description line. Edits sync with the tree; matching titles keep their generated content.</div>
             </sc-if>
           </div>
@@ -591,10 +675,10 @@
 
       <!-- STEP: SECTION CONTENT -->
       <sc-if value="{{ wizOnSection }}" hint-placeholder-val="{{ false }}">
-        <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.3fr;gap:12px;padding:6px 20px 12px">
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:{{ wizSecGridCols }};grid-auto-rows:{{ gridRows }};overflow-y:{{ gridOverflow }};gap:12px;padding:6px 20px 12px">
 
           <!-- Left: inputs -->
-          <div style="min-height:0;display:flex;flex-direction:column;gap:10px">
+          <div style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:10px">
             <div style="flex:none;display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Section</span>
               <div style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.01em">{{ wizSecTitle }}</div>
@@ -610,15 +694,15 @@
               </sc-if>
             </div>
 
-            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="flex:1;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona · this section</span>
               <select value="{{ wizSecPersona }}" onChange="{{ setWizSecPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
                 <sc-for list="{{ wizPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
               </select>
-              <textarea value="{{ wizSecPersonaPromptV }}" onChange="{{ setWizSecPersonaPromptV }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+              <textarea value="{{ wizSecPersonaPromptV }}" onChange="{{ setWizSecPersonaPromptV }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
             </div>
 
-            <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+            <div style="flex:1;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Length / Depth</span>
               <div style="display:flex;background:var(--seg);border-radius:7px;padding:2px">
                 <sc-for list="{{ wizLenChoices }}" as="lc" hint-placeholder-count="3">
@@ -626,7 +710,7 @@
                 </sc-for>
               </div>
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);margin-top:4px">Extra instructions / context</span>
-              <textarea value="{{ wizSecExtra }}" onChange="{{ setWizSecExtra }}" spellCheck="{{ false }}" placeholder="Optional — domain facts, must-mention points, things to avoid…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+              <textarea value="{{ wizSecExtra }}" onChange="{{ setWizSecExtra }}" spellCheck="{{ false }}" placeholder="Optional — domain facts, must-mention points, things to avoid…" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:8px 10px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
             </div>
 
             <div style="flex:none;display:flex;flex-direction:column;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 13px">
@@ -644,7 +728,7 @@
           </div>
 
           <!-- Right: output (lite markdown viewer) -->
-          <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
             <div style="display:flex;align-items:center;gap:10px;min-height:24px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3);flex:none">Section Content</span>
               <span style="font-size:11.5px;color:var(--muted3);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ wizSecStatus }}</span>
@@ -663,7 +747,7 @@
               </div>
             </sc-if>
             <sc-if value="{{ wizSecShowEdit }}" hint-placeholder-val="{{ false }}">
-              <textarea value="{{ wizSecContent }}" onChange="{{ setWizSecContent }}" spellCheck="{{ false }}" title="Editable — your manual edits are kept" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+              <textarea value="{{ wizSecContent }}" onChange="{{ setWizSecContent }}" spellCheck="{{ false }}" title="Editable — your manual edits are kept" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:10px 12px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
             </sc-if>
             <sc-if value="{{ wizSecShowView }}" hint-placeholder-val="{{ false }}">
               <div style="flex:1;min-height:0;overflow-y:auto;border:1px solid var(--border2);background:var(--surface2);border-radius:8px;padding:10px 14px;font-family:{{ contentFontFamily }};color:var(--text)">
@@ -671,7 +755,7 @@
                   <div style="display:flex;gap:9px;padding:{{ wb.pad }};opacity:{{ wb.opacity }}">
                     <span style="flex:none;width:15px;padding-top:{{ wb.checkTop }}">
                       <sc-if value="{{ wb.hasCheck }}" hint-placeholder-val="{{ true }}">
-                        <input type="checkbox" checked="{{ wb.checked }}" onChange="{{ wb.onToggle }}" title="Include in final prompt" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px"></input>
+                        <input type="checkbox" checked="{{ wb.checked }}" onChange="{{ wb.onToggle }}" title="Include in final prompt" style="accent-color:{{ accent }};cursor:pointer;width:13px;height:13px">
                       </sc-if>
                     </span>
                     <div style="flex:1;min-width:0">{{ wb.el }}</div>
@@ -690,38 +774,17 @@
       <!-- STEP: REVIEW -->
       <sc-if value="{{ wizOnReview }}" hint-placeholder-val="{{ false }}">
         <div style="flex:1;min-height:0;display:flex;flex-direction:column;padding:6px 20px 12px">
-          <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+          <div style="flex:1;min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
             <div style="display:flex;align-items:baseline;gap:10px;min-height:18px">
               <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Assembled Prompt</span>
               <span style="font-size:11.5px;color:{{ wizMissingColor }}">{{ wizMissingNote }}</span>
             </div>
-            <textarea value="{{ wizAssembled }}" readOnly="{{ true }}" spellCheck="{{ false }}" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:12px 14px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+            <textarea value="{{ wizAssembled }}" readOnly="{{ true }}" spellCheck="{{ false }}" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:12px 14px;font:12.5px/1.7 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
             <div style="font-size:11px;color:var(--muted3)">Deselected sections and unchecked blocks are left out. To change a section, click its step above and regenerate or edit it there.</div>
           </div>
         </div>
       </sc-if>
 
-      <!-- Footer -->
-      <div style="flex:none;display:flex;align-items:center;gap:10px;padding:10px 20px;border-top:1px solid var(--border);background:var(--surface)">
-        <span style="font-size:11px;color:var(--muted3)">{{ wizFootNote }}</span>
-        <div style="flex:1"></div>
-        <sc-if value="{{ wizOnStructure }}" hint-placeholder-val="{{ true }}">
-          <button onClick="{{ wizGenStructure }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenStructLabel }}</button>
-          <sc-if value="{{ wizHasItems }}" hint-placeholder-val="{{ false }}">
-            <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
-          </sc-if>
-        </sc-if>
-        <sc-if value="{{ wizOnSection }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
-          <button onClick="{{ wizGenSection }}" disabled="{{ wizBusy }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ wizGenSecLabel }}</button>
-          <button onClick="{{ wizNext }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizNextBtnLabel }}</button>
-        </sc-if>
-        <sc-if value="{{ wizOnReview }}" hint-placeholder-val="{{ false }}">
-          <button onClick="{{ wizBack }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">← Back</button>
-          <button onClick="{{ wizCopy }}" style="border:1px solid var(--border);background:var(--surface);border-radius:7px;height:32px;padding:0 14px;font-size:12.5px;cursor:pointer;color:var(--text)" style-hover="background:var(--subtle)">{{ wizCopyLabel }}</button>
-          <button onClick="{{ wizOpenViewer }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">Open in Markdown Viewer →</button>
-        </sc-if>
-      </div>
     </div>
     </div>
   </sc-if>
@@ -732,7 +795,7 @@
 
     <!-- ---- AI Settings sidebar (Enrich) ---- -->
     <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
-      <div style="width:290px;flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
+      <div data-tour="t-ai" style="width:min(290px,38vw);flex:none;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--border);min-height:0">
         <button onClick="{{ toggleAi }}" title="Click to hide" style="flex:none;display:flex;align-items:center;justify-content:space-between;height:30px;padding:0 12px;border:none;border-bottom:1px solid var(--border);background:var(--seg);cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">
           AI Settings <span style="font-size:12px">⟨</span>
         </button>
@@ -749,31 +812,31 @@
               <sc-for list="{{ modelChoices }}" as="mm" hint-placeholder-count="4"><option value="{{ mm.id }}">{{ mm.label }}</option></sc-for>
             </select>
             <sc-if value="{{ aiModelCustom }}" hint-placeholder-val="{{ false }}">
-              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+              <input value="{{ aiModel }}" onChange="{{ setAiModel }}" placeholder="model id" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">API Key</label>
-            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input type="password" value="{{ aiKey }}" onChange="{{ setAiKey }}" placeholder="sk-…" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;flex-direction:column;gap:5px">
             <label style="font-size:11px;font-weight:700;color:var(--muted)">Base URL</label>
-            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)"></input>
+            <input value="{{ aiBaseUrl }}" onChange="{{ setAiBaseUrl }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface)">
           </div>
           <div style="display:flex;gap:10px">
             <div style="flex:1;display:flex;flex-direction:column;gap:5px;opacity:{{ aiTempOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiTempOn }}" onChange="{{ toggleAiTemp }}" disabled="{{ aiTempLock }}" title="Include temperature in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Temperature: {{ aiTemp }}
               </label>
-              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%"></input>
+              <input type="range" min="0" max="2" step="0.1" value="{{ aiTemp }}" onChange="{{ setAiTemp }}" disabled="{{ aiTempOff }}" style="accent-color:{{ accent }};width:100%">
             </div>
             <div style="width:100px;display:flex;flex-direction:column;gap:5px;opacity:{{ aiMaxTokOpacity }}">
               <label style="font-size:11px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px">
-                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px"></input>
+                <input type="checkbox" checked="{{ aiMaxTokOn }}" onChange="{{ toggleAiMaxTok }}" disabled="{{ aiMaxTokLock }}" title="Include max tokens in request" style="accent-color:{{ accent }};cursor:pointer;width:12px;height:12px">
                 Max tokens
               </label>
-              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%"></input>
+              <input type="number" value="{{ aiMaxTok }}" onChange="{{ setAiMaxTok }}" disabled="{{ aiMaxTokOff }}" style="border:1px solid var(--border3);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--surface);width:100%">
             </div>
           </div>
           <sc-if value="{{ showTokParam }}" hint-placeholder-val="{{ false }}">
@@ -799,27 +862,34 @@
       </div>
     </sc-if>
     <sc-if value="{{ aiClosed }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ toggleAi }}" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
+      <button onClick="{{ toggleAi }}" data-tour="t-ai" style="width:26px;flex:none;border:none;border-right:1px solid var(--border);background:var(--seg);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--hover)">
         <span style="writing-mode:vertical-rl;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">AI Settings&nbsp;&nbsp;⟩</span>
       </button>
     </sc-if>
 
     <div style="flex:1;min-width:0;min-height:0;display:flex;flex-direction:column">
 
+      <!-- toolbar -->
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-height:40px;padding:4px 18px;border-bottom:1px solid var(--border2);background:var(--surface2);flex:none">
+        <span style="font-size:11px;color:var(--muted3)">System (in AI Settings) + Structure + Persona + Mode · full prompt is logged to the console</span>
+        <div style="flex:1"></div>
+        <button onClick="{{ enGenerate }}" data-tour="e-generate" disabled="{{ enGenerating }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:28px;padding:0 16px;font-size:12.5px;font-weight:600;cursor:pointer">{{ enGenLabel }}</button>
+      </div>
+
       <!-- Input prompt (top third) -->
-      <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;padding:14px 20px 8px">
+      <div data-tour="e-input" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:7px;padding:14px 20px 8px">
         <div style="display:flex;align-items:baseline;gap:10px">
           <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Input Prompt</span>
-          <span style="font-size:11.5px;color:var(--muted3)">Rough idea in — structured, reusable prompt out</span>
+          <span style="display:{{ subtleNoteDisplay }};font-size:11.5px;color:var(--muted3)">Rough idea in — structured, reusable prompt out</span>
         </div>
-        <textarea value="{{ enInput }}" onChange="{{ setEnInput }}" spellCheck="{{ false }}" placeholder="Type a rough prompt about anything, e.g. 'a calculator application'…" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:13px 16px;font:13.5px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
+        <textarea value="{{ enInput }}" onChange="{{ setEnInput }}" spellCheck="{{ false }}" placeholder="Type a rough prompt about anything, e.g. 'a calculator application'…" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:13px 16px;font:13.5px/1.6 ui-monospace,Menlo,Consolas,monospace;color:var(--text2)"></textarea>
       </div>
 
       <!-- Sections (bottom two thirds) -->
-      <div style="flex:2;min-height:0;display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:12px;padding:6px 20px 12px">
+      <div style="flex:2;min-height:0;display:grid;grid-template-columns:{{ enGridCols }};grid-auto-rows:{{ gridRows }};overflow-y:{{ gridOverflow }};gap:12px;padding:6px 20px 12px">
 
         <!-- MODE -->
-        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+        <div data-tour="e-mode" style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
           <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
             <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Mode</span>
             <sc-if value="{{ enModeCustom }}" hint-placeholder-val="{{ false }}">
@@ -832,11 +902,11 @@
             </sc-for>
           </div>
           <div style="font-size:12px;color:var(--muted2);line-height:1.5">{{ enModeSummary }}</div>
-          <textarea value="{{ enModePrompt }}" onChange="{{ setEnModePrompt }}" spellCheck="{{ false }}" title="Mode instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+          <textarea value="{{ enModePrompt }}" onChange="{{ setEnModePrompt }}" spellCheck="{{ false }}" title="Mode instruction sent to the model" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
         </div>
 
         <!-- PERSONA -->
-        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+        <div data-tour="e-persona" style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
           <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
             <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Persona</span>
             <div style="display:flex;align-items:center;gap:7px">
@@ -844,20 +914,20 @@
                 <button onClick="{{ enSavePersona }}" title="Save the edited prompt as this persona's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
                 <button onClick="{{ resetEnPersona }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
               </sc-if>
-              <button onClick="{{ enAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
-              <button onClick="{{ enRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
-              <button onClick="{{ enDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+              <button onClick="{{ enAddPersona }}" title="Add a new persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">＋ Add</button>
+              <button onClick="{{ enRenamePersona }}" title="Rename the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Rename</button>
+              <button onClick="{{ enDeletePersona }}" title="Delete the selected persona" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Delete</button>
             </div>
           </div>
           <select value="{{ enPersona }}" onChange="{{ setEnPersona }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
             <sc-for list="{{ enPersonaNames }}" as="pn" hint-placeholder-count="4"><option value="{{ pn }}">{{ pn }}</option></sc-for>
           </select>
           <div style="font-size:12px;color:var(--muted2);line-height:1.5">From which perspective the result is written.</div>
-          <textarea value="{{ enPersonaPrompt }}" onChange="{{ setEnPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+          <textarea value="{{ enPersonaPrompt }}" onChange="{{ setEnPersonaPrompt }}" spellCheck="{{ false }}" placeholder="No persona — a neutral, knowledgeable perspective is used." title="Persona instruction sent to the model" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
         </div>
 
         <!-- STRUCTURE -->
-        <div style="min-height:0;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
+        <div data-tour="e-structure" style="min-height:{{ cardMinH }};display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 13px">
           <div style="display:flex;align-items:center;justify-content:space-between;min-height:18px">
             <span style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted3)">Structure</span>
             <div style="display:flex;align-items:center;gap:7px">
@@ -865,9 +935,9 @@
                 <button onClick="{{ enSaveStruct }}" title="Save the edited prompt as this structure's default" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0;font-weight:700">Save</button>
                 <button onClick="{{ resetEnStruct }}" style="border:none;background:none;cursor:pointer;font-size:11px;color:{{ accent }};padding:0">Reset</button>
               </sc-if>
-              <button onClick="{{ enAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">＋ Add</button>
-              <button onClick="{{ enRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Rename</button>
-              <button onClick="{{ enDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer">Delete</button>
+              <button onClick="{{ enAddStruct }}" title="Add a new structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">＋ Add</button>
+              <button onClick="{{ enRenameStruct }}" title="Rename the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Rename</button>
+              <button onClick="{{ enDeleteStruct }}" title="Delete the selected structure" style="border:1px solid var(--border2);background:none;border-radius:5px;padding:2px 7px;font-size:10.5px;color:var(--muted2);cursor:pointer;white-space:nowrap">Delete</button>
             </div>
           </div>
           <select value="{{ enStruct }}" onChange="{{ setEnStruct }}" style="border:1px solid var(--border3);border-radius:7px;padding:6px 8px;font-size:12.5px;background:var(--surface);cursor:pointer;width:100%">
@@ -882,16 +952,10 @@
               <div style="color:var(--muted3);padding-left:12px">└ no "- Section" bullets found in the prompt</div>
             </sc-if>
           </div>
-          <textarea value="{{ enStructPrompt }}" onChange="{{ setEnStructPrompt }}" spellCheck="{{ false }}" title="Structure instruction sent to the model — the section tree above is read from its bullets" style="flex:1;min-height:0;width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
+          <textarea value="{{ enStructPrompt }}" onChange="{{ setEnStructPrompt }}" spellCheck="{{ false }}" title="Structure instruction sent to the model — the section tree above is read from its bullets" style="flex:1;min-height:{{ taMinH }};width:100%;resize:none;border:1px solid var(--border2);border-radius:8px;background:var(--surface2);padding:9px 11px;font:11.5px/1.55 ui-monospace,Menlo,monospace;color:var(--text3)"></textarea>
         </div>
       </div>
 
-      <!-- Footer -->
-      <div style="flex:none;display:flex;align-items:center;gap:12px;padding:10px 20px;border-top:1px solid var(--border);background:var(--surface)">
-        <span style="font-size:11px;color:var(--muted3)">System (in AI Settings) + Structure + Persona + Mode · full prompt is logged to the console</span>
-        <div style="flex:1"></div>
-        <button onClick="{{ enGenerate }}" disabled="{{ enGenerating }}" style="border:none;background:{{ accent }};color:#fff;border-radius:7px;height:32px;padding:0 18px;font-size:12.5px;font-weight:600;cursor:pointer">{{ enGenLabel }}</button>
-      </div>
     </div>
     </div>
   </sc-if>
@@ -1101,12 +1165,46 @@ const PROVIDERS = [
   { id: 'custom', label: 'Custom (OpenAI-compatible)', model: '', base: '', models: [] },
 ];
 
+const TOURS = {
+  viewer: [
+    { title: 'Markdown Viewer', body: 'Your prompt workspace: write markdown with inline options, pick values, include or exclude sections, and copy a clean final prompt.' },
+    { title: 'Option format', body: 'Use this format:', visual: 'option-format' },
+    { target: 'v-mode', title: 'Edit & View modes', body: 'Edit shows the raw markdown source. View renders it with interactive option selectors and per-section checkboxes.' },
+    { target: 'v-templates', title: 'Templates', body: 'One place for all templates: open the dropdown to load the default or a saved template, save the current prompt as a new one, or delete old ones. Open / Export work with .md files.' },
+    { target: 'v-detect', title: 'Detect Options', body: 'AI scans your markdown and suggests inline options — like [tone](ph:formal|casual) — wherever a fixed value could vary.' },
+    { target: 'v-copy', title: 'Copy Prompt', body: 'Copies the final prompt with your chosen option values, skipping any sections you deselected.' },
+    { target: 'v-outline', title: 'Outline', body: 'Jump to any heading. Click a dot to include or exclude that section from the copied prompt.' },
+    { target: 'v-panel', title: 'Options panel', body: 'Every option in the document, grouped by name. Pick values here, jump to occurrences, or add, rename and delete options.' },
+    { target: 't-ai', title: 'AI Settings', body: 'Provider, model and API key used by the AI features. Everything is stored only in your browser.' },
+    { target: 't-custom', title: 'Customize', body: 'Theme, accent color, selector style, font size, layout and content font.' },
+  ],
+  builder: [
+    { title: 'Prompt Wizard', body: 'Build a polished prompt step by step: describe your idea, generate a structure, refine each section with AI, then review the result.' },
+    { target: 'w-steps', title: 'Step progress', body: 'Your path through the wizard. Each chip is a step — click one to jump back or forward at any time.' },
+    { target: 'w-input', title: 'Initial input', body: 'Describe what the final prompt should do. The AI proposes a section structure from it, guided by the Persona and Structure you pick below.' },
+    { target: 'w-toolbar', title: 'Step actions', body: 'The buttons for the current step live here: generate, go back, continue — and at the end, copy the result or open it in the Markdown Viewer.' },
+    { target: 't-ai', title: 'AI Settings', body: 'Provider, model and API key used to generate structure and sections. Each wizard step has its own editable system prompt.' },
+    { target: 't-custom', title: 'Customize', body: 'Theme, accent color, selector style, font size, layout and content font.' },
+  ],
+  workshop: [
+    { title: 'Enrich Prompt', body: 'Turn a rough one-liner into a structured, reusable prompt in a single pass.' },
+    { target: 'e-input', title: 'Input prompt', body: 'Type your rough idea here — it gets rewritten into a full prompt, not answered.' },
+    { target: 'e-mode', title: 'Mode', body: 'How aggressively to transform the input. The exact instruction sent to the model is shown below and is editable.' },
+    { target: 'e-persona', title: 'Persona', body: 'The perspective the result is written from. Add your own personas and edit their instructions.' },
+    { target: 'e-structure', title: 'Structure', body: 'The section skeleton of the output. The tree preview is read live from the bullets in the instruction.' },
+    { target: 'e-generate', title: 'Generate', body: 'Combines System + Structure + Persona + Mode with your input and generates the enriched prompt.' },
+    { target: 't-ai', title: 'AI Settings', body: 'Provider, model, API key and the Enrich system prompt. Everything is stored only in your browser.' },
+    { target: 't-custom', title: 'Customize', body: 'Theme, accent color, selector style, font size, layout and content font.' },
+  ],
+};
+
 class Component extends DCLogic {
   state = {
     tab: 'viewer', mode: 'view', raw: SAMPLE,
     deselected: {}, optionSel: {}, collapsed: {}, optGroupClosed: {},
-    panelOpen: true, panelWidth: 0.2, currentHid: null, copied: false,
+    panelOpen: true, panelWidth: 0.2, outlineOpen: true, currentHid: null, copied: false,
     settingsOpen: false, custom: {},
+    winW: (typeof window !== 'undefined' ? window.innerWidth : 1200),
     aiOpen: false, detecting: false,
     aiCfg: { provider: 'openai', byProvider: {}, systemPrompt: DEFAULT_SYS },
     lib: { personas: { ...ENRICH_PERSONAS }, structs: { ...ENRICH_STRUCTURES } },
@@ -1115,6 +1213,8 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    window.addEventListener('resize', this._tourResize = () => { if (this.state.tour) this.measureTour(); });
+    setTimeout(() => this.maybeStartTour(this.state.tab), 700);
     try {
       const saved = JSON.parse(localStorage.getItem('mps-state') || 'null');
       if (saved && typeof saved === 'object') {
@@ -1138,6 +1238,8 @@ class Component extends DCLogic {
     this._onUp = () => { this._resizing = false; document.body.style.userSelect = ''; };
     window.addEventListener('mousemove', this._onMove);
     window.addEventListener('mouseup', this._onUp);
+    this._onResize = () => this.setState({ winW: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
     this._onDocDown = (e) => {
       if (!this.state.settingsOpen) return;
       const t = e.target;
@@ -1160,7 +1262,7 @@ class Component extends DCLogic {
         raw: s.raw, mode: s.mode, tab: s.tab,
         deselected: s.deselected, optionSel: s.optionSel,
         collapsed: s.collapsed, optGroupClosed: s.optGroupClosed,
-        panelOpen: s.panelOpen, panelWidth: s.panelWidth,
+        panelOpen: s.panelOpen, panelWidth: s.panelWidth, outlineOpen: s.outlineOpen,
         custom: s.custom, noOptNever: s.noOptNever, aiCfg: s.aiCfg, promptName: s.promptName, lib: s.lib,
         enrich: { ...s.enrich, generating: false },
         wiz: { ...s.wiz, busy: false, rawDraft: null, copied: false },
@@ -1177,7 +1279,9 @@ class Component extends DCLogic {
 
   // ---------- parsing ----------
   parse(raw) {
-    const lines = raw.split('\n');
+    // Normalize imported files before parsing. In particular, a UTF-8 BOM on the
+    // first line used to make an otherwise valid first heading look like text.
+    const lines = String(raw ?? '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n');
     const blocks = [];
     let stack = []; // heading stack {id, level}
     let i = 0, bi = 0;
@@ -1185,14 +1289,30 @@ class Component extends DCLogic {
     while (i < lines.length) {
       const line = lines[i];
       if (/^\s*$/.test(line)) { i++; continue; }
-      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      // CommonMark permits up to three leading spaces and an optional closing
+      // sequence of # characters. It also permits an empty ATX heading.
+      const h = line.match(/^ {0,3}(#{1,6})(?:[ \t]+(.*?)\s*|[ \t]*)$/);
       if (h) {
         const level = h[1].length;
         while (stack.length && stack[stack.length - 1].level >= level) stack.pop();
         const id = 'b' + (bi++);
-        blocks.push({ id, type: 'h', level, text: h[2], raw: line, ancestors: anc(), srcLine: i + 1 });
+        const text = (h[2] || '').replace(/[ \t]+#+[ \t]*$/, '');
+        blocks.push({ id, type: 'h', level, text, raw: line, ancestors: anc(), srcLine: i + 1 });
         stack.push({ id, level });
         i++; continue;
+      }
+      // Setext headings are widely produced by Markdown editors and document
+      // converters. Recognize them here so the rendered view and outline agree.
+      const setext = i + 1 < lines.length && !/^\s*$/.test(line)
+        ? lines[i + 1].match(/^ {0,3}(=+|-+)[ \t]*$/)
+        : null;
+      if (setext) {
+        const level = setext[1][0] === '=' ? 1 : 2;
+        while (stack.length && stack[stack.length - 1].level >= level) stack.pop();
+        const id = 'b' + (bi++);
+        blocks.push({ id, type: 'h', level, text: line.trim(), raw: line + '\n' + lines[i + 1], ancestors: anc(), srcLine: i + 1 });
+        stack.push({ id, level });
+        i += 2; continue;
       }
       if (/^```/.test(line)) {
         const start = i; const lang = line.slice(3).trim(); i++;
@@ -2087,6 +2207,45 @@ class Component extends DCLogic {
     return vals;
   }
 
+  // ---------- guided tour ----------
+  tourSeen() { try { return JSON.parse(localStorage.getItem('mps-tour-seen') || '{}'); } catch (e) { return {}; } }
+  setTourSeen(tab, val) {
+    const seen = this.tourSeen(); seen[tab] = !!val;
+    try { localStorage.setItem('mps-tour-seen', JSON.stringify(seen)); } catch (e) {}
+    this.forceUpdate();
+  }
+  maybeStartTour(tab) {
+    if (this.state.tab !== tab) return;
+    this._tourShown = this._tourShown || {};
+    if (this._tourShown[tab] || this.tourSeen()[tab]) return;
+    this.startTour(tab);
+  }
+  startTour(tab) {
+    this._tourShown = this._tourShown || {};
+    this._tourShown[tab] = true;
+    this.setState({ tour: { tab, step: 0 }, tourRect: null });
+    setTimeout(() => this.measureTour(tab, 0), 60);
+  }
+  measureTour(tab, idx) {
+    const t = this.state.tour; if (!t) return;
+    if (tab === undefined) { tab = t.tab; idx = t.step; }
+    const step = (TOURS[tab] || [])[idx]; if (!step) return;
+    let rect = null;
+    if (step.target) {
+      const el = document.querySelector('[data-tour="' + step.target + '"]');
+      if (el) { const r = el.getBoundingClientRect(); rect = { top: r.top, left: r.left, w: r.width, h: r.height }; }
+    }
+    this.setState({ tourRect: rect });
+  }
+  tourGo(d) {
+    const t = this.state.tour; if (!t) return;
+    const n = t.step + d, steps = TOURS[t.tab];
+    if (n < 0 || n >= steps.length) return this.endTour();
+    this.setState({ tour: { ...t, step: n } });
+    setTimeout(() => this.measureTour(t.tab, n), 60);
+  }
+  endTour() { this.setState({ tour: null, tourRect: null }); }
+
   // ---------- prompt library ----------
   loadPromptStore() {
     try { return JSON.parse(localStorage.getItem('mps-prompts') || '{}'); } catch (e) { return {}; }
@@ -2153,8 +2312,12 @@ class Component extends DCLogic {
   }
 
   goToBlock(id) {
+    this.setState({ currentHid: id });
     const el = this._scroll && this._scroll.querySelector('[data-hid="' + id + '"]');
-    if (el && this._scroll) this._scroll.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
+    if (el && this._scroll) {
+      const top = el.getBoundingClientRect().top - this._scroll.getBoundingClientRect().top + this._scroll.scrollTop - 20;
+      this._scroll.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
   }
 
   // ---------- render ----------
@@ -2165,6 +2328,8 @@ class Component extends DCLogic {
     const des = s.deselected;
     const scale = s.custom.fontSize ?? 1;
     const compact = (s.custom.layout ?? 'comfortable') === 'compact';
+    const narrow = s.winW < 1000;
+    const tiny = s.winW < 720;
 
     // current section + ancestors
     const curSet = {};
@@ -2204,18 +2369,16 @@ class Component extends DCLogic {
         indent: '0px', pad: '3px 0',
         line: b.srcLine, numTop: '3px',
         railColor: (s.currentHid && (b.id === s.currentHid || (b.ancestors || []).includes(s.currentHid))) ? a : 'var(--rail)',
-        hasCheck: false, hasCollapse: false, chev: '▾', chevTop: '6px', checkTop: '5px',
+        hasCheck: false, checkTop: '5px',
       };
       if (b.type === 'h') {
         const sizes = { 1: 27, 2: 21, 3: 17, 4: 15, 5: 14, 6: 13 };
         const fz = Math.round((sizes[b.level] || 14) * scale);
         const isCur = curSet[b.id];
         blocks.push({
-          ...common, hasCheck: b.level <= 3, hasCollapse: true,
-          chev: s.collapsed[b.id] ? '▸' : '▾',
-          chevTop: Math.round((fz * 1.3 - 13) / 2) + 'px', checkTop: Math.round((fz * 1.3 - 14) / 2) + 'px',
+          ...common, hasCheck: b.level <= 3,
+          checkTop: Math.round((fz * 1.3 - 14) / 2) + 'px',
           pad: (compact ? (b.level === 1 ? '5px' : '8px') : (b.level === 1 ? '10px' : '14px')) + ' 0 2px',
-          onCollapse: () => this.setState(st => ({ collapsed: { ...st.collapsed, [b.id]: !st.collapsed[b.id] } })),
           numTop: Math.round((fz * 1.3 - 11) / 2) + 'px',
           el: React.createElement('div', { style: { fontSize: fz, fontWeight: 700, lineHeight: 1.3, letterSpacing: b.level === 1 ? '-0.015em' : '0' } }, this.renderInline(b.text, b.id, occCounter)),
         });
@@ -2258,7 +2421,6 @@ class Component extends DCLogic {
 
     // outline
     const outline = parsed.blocks.filter(b => b.type === 'h' && b.level <= 3).map(h => {
-      const hasKids = parsed.blocks.some(b => b.type === 'h' && b.level <= 3 && b.ancestors.includes(h.id));
       const hidden = (h.ancestors || []).some(x => s.collapsed[x]);
       return hidden ? null : {
         text: h.text.replace(/\[([^\]]+)\]\(ph:[^)]+\)/g, '$1'),
@@ -2267,13 +2429,20 @@ class Component extends DCLogic {
         bg: s.currentHid === h.id ? a + '14' : 'transparent',
         opacity: this.isDim(h, des) ? 0.4 : 1,
         checked: !des[h.id],
-        chev: s.collapsed[h.id] ? '▸' : '▾',
-        chevVis: hasKids ? 'visible' : 'hidden',
+        chev: s.collapsed[h.id] ? '+' : '-',
         onToggle: () => this.setState(st => ({ deselected: { ...st.deselected, [h.id]: !st.deselected[h.id] } })),
         onCollapse: () => this.setState(st => ({ collapsed: { ...st.collapsed, [h.id]: !st.collapsed[h.id] } })),
         onGo: () => this.goToBlock(h.id),
+        nodeMark: des[h.id] ? '' : '✓',
+        nodeTitle: des[h.id] ? 'Excluded from copy. Click to include.' : 'Included in copy. Click to exclude.',
+        nodeBg: des[h.id] ? 'var(--surface)' : a,
+        nodeBorder: des[h.id] ? 'var(--border3)' : a,
+        nodeColor: des[h.id] ? 'transparent' : '#fff',
+        nodeGlow: s.currentHid === h.id ? '0 0 0 3px ' + a + '22' : 'none',
+        labelColor: s.currentHid === h.id ? a : (des[h.id] ? 'var(--faint)' : 'var(--muted)'),
       };
     }).filter(Boolean);
+    outline.forEach((o, i) => { o.notLast = i < outline.length - 1; });
 
     // option groups
     const byName = {};
@@ -2315,9 +2484,46 @@ class Component extends DCLogic {
       mailAuthor: () => this.setState({ contactOpen: true }),
       contactOpen: !!s.contactOpen,
       closeContact: () => this.setState({ contactOpen: false }),
-      openHelp: () => this.setState({ helpOpen: true }),
+      openHelp: () => this.startTour(s.tab),
       helpOpen: !!s.helpOpen,
       closeHelp: () => this.setState({ helpOpen: false }),
+      ...(() => {
+        const t = s.tour;
+        if (!t) return { tourActive: false };
+        const steps = TOURS[t.tab] || [];
+        const step = steps[t.step] || {};
+        const r = s.tourRect;
+        const vw = window.innerWidth || 1200, vh = window.innerHeight || 800;
+        const pad = 6, tipW = 330, tipH = 230;
+        let spotTop, spotLeft, spotW, spotH, tipTop, tipLeft, tipTransform;
+        if (r) {
+          spotTop = (r.top - pad) + 'px'; spotLeft = (r.left - pad) + 'px';
+          spotW = (r.w + pad * 2) + 'px'; spotH = (r.h + pad * 2) + 'px';
+          const below = r.top + r.h + 14;
+          const top = (below + tipH < vh) ? below : Math.max(12, r.top - tipH - 14);
+          const left = Math.min(Math.max(12, r.left + r.w / 2 - tipW / 2), Math.max(12, vw - tipW - 12));
+          tipTop = top + 'px'; tipLeft = left + 'px'; tipTransform = 'none';
+        } else {
+          spotTop = '50%'; spotLeft = '50%'; spotW = '0px'; spotH = '0px';
+          tipTop = '50%'; tipLeft = '50%'; tipTransform = 'translate(-50%,-50%)';
+        }
+        return {
+          tourActive: true,
+          tourTitle: step.title, tourBody: step.body,
+          tourOptionFormat: step.visual === 'option-format',
+          tourStepLabel: (t.step + 1) + ' / ' + steps.length,
+          tourDots: steps.map((x, i) => ({ op: i === t.step ? 1 : 0.25 })),
+          tourBack: () => this.tourGo(-1),
+          tourNext: () => this.tourGo(1),
+          tourClose: () => this.endTour(),
+          tourBackDisplay: t.step === 0 ? 'none' : 'inline-flex',
+          tourNextLabel: t.step === steps.length - 1 ? 'Done' : 'Next →',
+          tourDontShow: !!this.tourSeen()[t.tab],
+          toggleTourDontShow: (e) => this.setTourSeen(t.tab, e.target.checked),
+          tourSpotTop: spotTop, tourSpotLeft: spotLeft, tourSpotW: spotW, tourSpotH: spotH,
+          tourTipTop: tipTop, tourTipLeft: tipLeft, tourTipTransform: tipTransform,
+        };
+      })(),
       stop: (e) => e.stopPropagation(),
       ...(() => {
         const H = {
@@ -2395,30 +2601,44 @@ class Component extends DCLogic {
       }),
       // tabs
       onViewerTab: s.tab === 'viewer', onBuilderTab: s.tab === 'builder', onWorkshopTab: s.tab === 'workshop',
-      goTabViewer: () => this.setState({ tab: 'viewer' }),
-      goTabBuilder: () => this.setState({ tab: 'builder' }),
-      goTabWorkshop: () => this.setState({ tab: 'workshop' }),
-      tabViewerBorder: s.tab === 'viewer' ? a : 'transparent',
-      tabViewerColor: s.tab === 'viewer' ? 'var(--text)' : 'var(--muted2)',
-      tabViewerWeight: s.tab === 'viewer' ? 600 : 400,
-      tabBuilderBorder: s.tab === 'builder' ? a : 'transparent',
-      tabBuilderColor: s.tab === 'builder' ? 'var(--text)' : 'var(--muted2)',
-      tabBuilderWeight: s.tab === 'builder' ? 600 : 400,
-      tabWorkshopBorder: s.tab === 'workshop' ? a : 'transparent',
-      tabWorkshopColor: s.tab === 'workshop' ? 'var(--text)' : 'var(--muted2)',
-      tabWorkshopWeight: s.tab === 'workshop' ? 600 : 400,
+      goTabViewer: () => { this.setState({ tab: 'viewer' }); setTimeout(() => this.maybeStartTour('viewer'), 300); },
+      goTabBuilder: () => { this.setState({ tab: 'builder' }); setTimeout(() => this.maybeStartTour('builder'), 300); },
+      goTabWorkshop: () => { this.setState({ tab: 'workshop' }); setTimeout(() => this.maybeStartTour('workshop'), 300); },
+      ...(() => {
+        const TAB_HUES = { viewer: '#0F766E', builder: '#6D28D9', workshop: '#B4552D' };
+        const dark = this.theme() === 'dark';
+        const TAB_HUES_DK = { viewer: '#2DD4BF', builder: '#A78BFA', workshop: '#E8926A' };
+        const hue = (k) => (dark ? TAB_HUES_DK : TAB_HUES)[k];
+        const tint = (k) => (dark
+          ? { viewer: 'rgba(45,212,191,.10)', builder: 'rgba(167,139,250,.10)', workshop: 'rgba(232,146,106,.12)' }
+          : { viewer: 'rgba(15,118,110,.07)', builder: 'rgba(109,40,217,.06)', workshop: 'rgba(180,85,45,.08)' })[k];
+        const v = {};
+        [['Viewer', 'viewer'], ['Builder', 'builder'], ['Workshop', 'workshop']].forEach(([N, k]) => {
+          const on = s.tab === k;
+          v['tab' + N + 'Border'] = on ? hue(k) : 'transparent';
+          v['tab' + N + 'Color'] = on ? 'var(--text)' : 'var(--muted2)';
+          v['tab' + N + 'Weight'] = on ? 600 : 400;
+          v['tab' + N + 'Icon'] = on ? hue(k) : 'var(--muted3)';
+          v['tab' + N + 'Bg'] = on ? tint(k) : 'none';
+        });
+        return v;
+      })(),
       // mode
       isEdit: s.mode === 'edit', isView: s.mode === 'view',
       setModeEdit: () => this.setState({ mode: 'edit' }),
       setModeView: () => this.setState({ mode: 'view' }),
-      editBtnBg: s.mode === 'edit' ? 'var(--seg-active)' : 'transparent',
-      editBtnColor: s.mode === 'edit' ? 'var(--text)' : 'var(--muted2)',
-      editBtnShadow: s.mode === 'edit' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
-      viewBtnBg: s.mode === 'view' ? 'var(--seg-active)' : 'transparent',
-      viewBtnColor: s.mode === 'view' ? 'var(--text)' : 'var(--muted2)',
-      viewBtnShadow: s.mode === 'view' ? '0 1px 2px rgba(0,0,0,.08)' : 'none',
+      editBtnBg: s.mode === 'edit' ? a : 'transparent',
+      editBtnColor: s.mode === 'edit' ? '#fff' : 'var(--muted2)',
+      editBtnShadow: s.mode === 'edit' ? '0 1px 3px rgba(0,0,0,.18)' : 'none',
+      viewBtnBg: s.mode === 'view' ? a : 'transparent',
+      viewBtnColor: s.mode === 'view' ? '#fff' : 'var(--muted2)',
+      viewBtnShadow: s.mode === 'view' ? '0 1px 3px rgba(0,0,0,.18)' : 'none',
+      modeHint: s.mode === 'edit' ? 'editing raw markdown' : 'interactive view — click options to select',
       raw: s.raw,
       onRawChange: (e) => this.setState({ raw: e.target.value, noOptDismissed: false }),
+      rawLineNums: String(s.raw || '').split('\n').map((_, i) => i + 1),
+      rawGutterRef: this._rawGutter || (this._rawGutter = React.createRef()),
+      onRawScroll: (e) => { const g = this._rawGutter && this._rawGutter.current; if (g) g.scrollTop = e.target.scrollTop; },
       noOptionsPopup: nOpts === 0 && !s.noOptDismissed && !s.noOptNever && s.tab === 'viewer' && s.mode === 'view',
       dismissNoOptions: () => this.setState({ noOptDismissed: true }),
       noOptNever: !!s.noOptNever,
@@ -2435,38 +2655,70 @@ class Component extends DCLogic {
           for (const el of els) {
             const b = parsed.blocks.find(x => x.id === el.getAttribute('data-hid'));
             if (!b || b.type !== 'h') continue;
-            if (el.offsetTop <= this._scroll.scrollTop + 90) cur = b.id; else break;
+            const relTop = el.getBoundingClientRect().top - this._scroll.getBoundingClientRect().top;
+            if (relTop <= 90) cur = b.id; else break;
           }
           if (cur !== this.state.currentHid) this.setState({ currentHid: cur });
         }, 80);
       },
       // panel
       panelOpen: s.panelOpen, panelClosed: !s.panelOpen,
-      panelWidthPx: Math.round(s.panelWidth * 100) + 'vw',
+      panelWidthPx: 'min(max(' + Math.round(s.panelWidth * 100) + 'vw,210px),70vw)',
+      brandTextDisplay: tiny ? 'none' : 'inline',
+      legendDisplay: narrow ? 'none' : 'flex',
+      subtleNoteDisplay: narrow ? 'none' : 'inline',
+      taMinH: narrow ? '84px' : '0',
+      cardMinH: narrow ? 'min-content' : '0',
+      wizGridCols: narrow ? '1fr' : '1fr 1.15fr',
+      wizSecGridCols: narrow ? '1fr' : '1fr 1.3fr',
+      enGridCols: narrow ? '1fr' : '1fr 1fr 1.15fr',
+      gridRows: narrow ? 'minmax(70vh,auto)' : 'auto',
+      gridOverflow: narrow ? 'auto' : 'visible',
       hidePanel: () => this.setState({ panelOpen: false }),
       showPanel: () => this.setState({ panelOpen: true }),
+      outlineOpen: s.outlineOpen, outlineClosed: !s.outlineOpen,
+      hideOutline: () => this.setState({ outlineOpen: false }),
+      showOutline: () => this.setState({ outlineOpen: true }),
       startResize: (e) => { e.preventDefault(); this._resizing = true; document.body.style.userSelect = 'none'; },
-      // prompt library
-      promptSel: (s.promptName && this.loadPromptStore()[s.promptName] !== undefined) ? s.promptName : (s.raw === SAMPLE ? '__sample' : '__none'),
-      promptNames: Object.keys(this.loadPromptStore()).sort(),
-      onPromptPick: (e) => {
-        const v = e.target.value;
-        if (v === '__manage') { this.setState({ manageOpen: true }); e.target.value = '__none'; return; }
-        if (v !== '__none') this.openPromptByName(v);
-      },
-      manageOpen: !!s.manageOpen,
-      closeManage: () => this.setState({ manageOpen: false }),
+      // prompt library (templates dropdown)
+      tplOpen: !!s.manageOpen,
+      toggleTpl: () => this.setState(st => ({ manageOpen: !st.manageOpen })),
+      closeTpl: () => this.setState({ manageOpen: false }),
+      tplBtnBorder: s.manageOpen ? a : 'var(--border3)',
+      tplLabel: (() => {
+        const store = this.loadPromptStore();
+        if (s.promptName && store[s.promptName] !== undefined) return s.promptName;
+        if (s.raw === SAMPLE) return 'Default';
+        return 'Unsaved';
+      })(),
+      saveTplAs: () => { this.savePrompt(); },
       noSavedPrompts: Object.keys(this.loadPromptStore()).length === 0,
-      promptRows: Object.keys(this.loadPromptStore()).sort().map((name) => ({
-        name,
-        del: () => {
-          if (!window.confirm('Delete saved prompt "' + name + '"?')) return;
-          const p = this.loadPromptStore();
-          delete p[name];
-          this.savePromptStore(p);
-          this.setState({ promptName: this.state.promptName === name ? null : this.state.promptName });
-        },
-      })),
+      tplRows: (() => {
+        const store = this.loadPromptStore();
+        const activeName = (s.promptName && store[s.promptName] !== undefined) ? s.promptName : (s.raw === SAMPLE ? '__sample' : null);
+        const mk = (name, label, isDefault) => {
+          const active = isDefault ? activeName === '__sample' : activeName === name;
+          return {
+            label,
+            check: active ? '✓' : '',
+            weight: active ? '700' : '400',
+            bg: active ? 'var(--hover)' : 'transparent',
+            delDisplay: isDefault ? 'none' : 'block',
+            open: () => {
+              if (isDefault) this.setState({ raw: SAMPLE, promptName: null, manageOpen: false, noOptDismissed: false });
+              else { this.openPromptByName(name); this.setState({ manageOpen: false }); }
+            },
+            del: () => {
+              if (!window.confirm('Delete saved template "' + name + '"?')) return;
+              const p = this.loadPromptStore();
+              delete p[name];
+              this.savePromptStore(p);
+              this.setState({ promptName: this.state.promptName === name ? null : this.state.promptName });
+            },
+          };
+        };
+        return [mk(null, '★ Default template', true)].concat(Object.keys(store).sort().map(n => mk(n, n, false)));
+      })(),
       savePrompt: () => this.savePrompt(),
       deletePrompt: () => this.deletePrompt(),
       importFile: () => this.importFile(),

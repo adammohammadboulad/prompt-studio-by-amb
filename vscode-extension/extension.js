@@ -2,7 +2,7 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 
-const STATE_KEYS = ['mps-state', 'mps-prompts'];
+const STATE_KEYS = ['mps-state', 'mps-prompts', 'mps-tour-seen'];
 let panel = null;
 let pendingDoc = null;
 let webviewReady = false;
@@ -83,7 +83,8 @@ async function buildHtml(context, webview) {
     .replace('__CSP__', `<meta http-equiv="Content-Security-Policy" content="${csp}">`)
     .replace('__INIT__', `<script nonce="${n}">window.__INITIAL_STORAGE__ = ${JSON.stringify(init)};</script>`)
     .replace('__BOOTSTRAP__', webview.asWebviewUri(vscode.Uri.joinPath(mediaRoot, 'bootstrap.js')).toString())
-    .replace('__SUPPORT_JS__', webview.asWebviewUri(vscode.Uri.joinPath(mediaRoot, 'support.js')).toString());
+    .replace('__SUPPORT_JS__', webview.asWebviewUri(vscode.Uri.joinPath(mediaRoot, 'support.js')).toString())
+    .replaceAll('__BRAND_LOGO__', webview.asWebviewUri(vscode.Uri.joinPath(mediaRoot, 'brand-small.png')).toString());
   return html;
 }
 

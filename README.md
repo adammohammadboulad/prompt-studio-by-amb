@@ -54,5 +54,10 @@ Light or dark theme, accent color, option selector style, font, and layout densi
 
 Prompts, settings, and wizard progress persist across sessions. Open and export use native file dialogs; exports write straight to your workspace.
 
+## To Create an Extension
+cd .\vscode-extension\ 
+npx @vscode/vsce package
+
+
 ## Author
 Adam Mohammad Boulad — adam.mohammad.boulad@gmail.com
