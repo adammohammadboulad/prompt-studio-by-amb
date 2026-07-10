@@ -1,6 +1,6 @@
 {
   "name": "prompt-studio-by-amb",
-  "displayName": "Prompt Studio by AMB",
+  "displayName": "Prompt Studio by AMB.",
   "description": "Turn prompts into living markdown with clickable inline options. Markdown viewer, step-by-step Prompt Wizard, and Enrich Prompt — with Mode, Persona and Structure dials — inside VSCode.",
   "version": "0.3.0",
   "publisher": "AMB",
